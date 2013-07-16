@@ -41,8 +41,7 @@ class BlitzMessage
     void set_flag(int flag_id, bool state);
     
     /* sending functions */
-    void send_serial();
-    void send_wire();
+    char *render();
     
     /* utility functions */
     void zero_payload();
