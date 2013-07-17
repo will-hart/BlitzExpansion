@@ -11,6 +11,11 @@
     #define FLAG_LENGTH 5
     #define PAYLOAD_LENGTH 16
     #define PAYLOAD_BITS 64
+	
+	// TODO define these per board (arduinos vs Due)
+	#define BLITZ_CHAR_LENGTH 8
+	#define BLITZ_INT_LENGTH 16
+	#define BLITZ_LONG_LENGTH 32
     
     #define _BLITZ_MESSAGE_DEFINES_
 #endif
