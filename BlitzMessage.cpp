@@ -8,39 +8,39 @@
  */
  
 #include "BlitzMessage.h"
-//#include "Arduino.h"
+#include "Arduino.h"
 
 /* packing functions */
 bool BlitzMessage::pack(bool data) { 
-    if (m_payloadIndex + 1 > PAYLOAD_LENGTH) {
+    if (this->m_payloadIndex + 1 > PAYLOAD_LENGTH) {
         return false;   
     }
     
-    m_rawPayload <<= 1;
+    this->m_rawPayload <<= 1;
     
     if (data == true) {
-        m_rawPayload |= 1;
+        this->m_rawPayload |= 1;
     }
     
-    ++m_payloadIndex;
+    this->m_payloadIndex++;
     
     return true;
 }
 
 bool BlitzMessage::pack(char data) { 
-    if (m_payloadIndex + BLITZ_CHAR_LENGTH > PAYLOAD_LENGTH) {
+    if (this->m_payloadIndex + BLITZ_CHAR_LENGTH > PAYLOAD_LENGTH) {
         return false;
     }
-    m_rawPayload <<= BLITZ_CHAR_LENGTH;
-    m_rawPayload |= data;
-    m_rawPayload += BLITZ_CHAR_LENGTH;
+    this->m_rawPayload <<= BLITZ_CHAR_LENGTH;
+    this->m_rawPayload |= data;
+    this->m_rawPayload += BLITZ_CHAR_LENGTH;
     
     return true;
 }
 
 bool BlitzMessage::pack(char data, int precision) {
     if (precision > BLITZ_CHAR_LENGTH ||
-            m_payloadIndex + precision < PAYLOAD_LENGTH) {
+            this->m_payloadIndex + precision < PAYLOAD_LENGTH) {
         return false;
     }
 
@@ -53,11 +53,11 @@ bool BlitzMessage::pack(char data, int precision) {
     unsigned char masked_data = mask & data;
     
     // shift the raw payload up the required bits and apply
-    m_rawPayload = m_rawPayload << (BLITZ_CHAR_LENGTH - precision);
-    m_rawPayload = m_rawPayload | masked_data;
+    this->m_rawPayload <<= (BLITZ_CHAR_LENGTH - precision);
+    this->m_rawPayload = this->m_rawPayload | masked_data;
     
     // increment the index
-    m_payloadIndex += precision;
+    this->m_payloadIndex += precision;
     
     return true;
 }
@@ -66,24 +66,22 @@ bool BlitzMessage::pack(int data) {
     if (m_payloadIndex + BLITZ_INT_LENGTH > PAYLOAD_LENGTH) {
         return false;
     }
-    m_rawPayload <<= BLITZ_INT_LENGTH;
-    m_rawPayload |= data;
-    m_payloadIndex += BLITZ_INT_LENGTH;
+    this->m_rawPayload <<= BLITZ_INT_LENGTH;
+    this->m_rawPayload |= data;
+    this->m_payloadIndex += BLITZ_INT_LENGTH;
     
     return true;
 }
 
-bool BlitzMessage::pack(int data, int precision) {
-    return false;
-}
+bool BlitzMessage::pack(int data, int precision) { return false; }
 
 bool BlitzMessage::pack(long data) { 
     if (m_payloadIndex + BLITZ_LONG_LENGTH > PAYLOAD_LENGTH) {
         return false;
     }
-    m_rawPayload <<= BLITZ_LONG_LENGTH;
-    m_rawPayload |= data;
-    m_payloadIndex += BLITZ_LONG_LENGTH;
+    this->m_rawPayload <<= BLITZ_LONG_LENGTH;
+    this->m_rawPayload |= data;
+    this->m_payloadIndex += BLITZ_LONG_LENGTH;
     
     return true;
 }
@@ -97,51 +95,61 @@ bool BlitzMessage::set_flag(int flag_id, bool state) {
         return false;
     }
     
-    m_flags[flag_id] = state;
+    this->m_flags[flag_id] = state;
     return true;
 }
 
 /* sending functions */
 char *BlitzMessage::render() { 
     // pad to the end with 0s
-    m_rawPayload <<= PAYLOAD_BITS - m_payloadIndex;
+    this->m_rawPayload <<= PAYLOAD_BITS - this->m_payloadIndex;
     
     // return as hex string
     char *output;
-    sprintf(output, "%016x", m_rawPayload);
+    sprintf(output, "%x", m_rawPayload);
+
+    this->reset();
     
     return output;
 }
 
 /* Utility functions */
-void BlitzMessage::zero_payload() 
+void BlitzMessage::reset() {
+    this->reset_payload();
+    this->reset_flags();
+}
+
+void BlitzMessage::reset_payload() 
 {
     for (int i = 0; i < PAYLOAD_LENGTH; ++i) 
     {
-        m_payload[i] = 0;
+        this->m_payload[i] = 0;
     }
+    
+    this->m_rawPayload = 0;
+    this->m_payloadIndex = 0;
 }
 
-void BlitzMessage::zero_flags() 
+void BlitzMessage::reset_flags() 
 {
     // initialise flags
     for (int i = 0; i < FLAG_LENGTH; ++i) {
-        m_flags[i] = false;
+        this->m_flags[i] = false;
     }
 }
 
 /* Constructor */
 BlitzMessage::BlitzMessage(char id)
 {
-    m_id = id;
-    m_rawPayload = 0;
-    m_payloadIndex = 0;
-    m_payload = new char[PAYLOAD_LENGTH];
-    m_flags = new bool[FLAG_LENGTH];
-    m_meta = 0;
-    m_timestamp = 0;
-    m_rawPayload = 0;
+    this->m_id = id;
+    this->m_rawPayload = 0;
+    this->m_payloadIndex = 0;
+    this->m_payload = new char[PAYLOAD_LENGTH];
+    this->m_flags = new bool[FLAG_LENGTH];
+    this->m_meta = 0;
+    this->m_timestamp = 0;
+    this->m_rawPayload = 0;
     
-    this->zero_flags();
-    this->zero_payload();
+    this->reset_flags();
+    this->reset_payload();
 }

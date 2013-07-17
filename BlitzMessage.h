@@ -13,6 +13,7 @@
     #define FLAG_LENGTH 5
     #define PAYLOAD_LENGTH 16
     #define PAYLOAD_BITS 64
+    #define PACKED_MESSAGE_CHAR_LENGTH 28
     
     // TODO define these per board (arduinos vs Due)
     #define BLITZ_CHAR_LENGTH 8
@@ -29,6 +30,10 @@ class BlitzMessage
         unsigned long long m_rawPayload;
         char *m_payload;
         int m_payloadIndex;
+        
+        /* utility functions */
+        void reset_payload();
+        void reset_flags();
         
     public:
         BlitzMessage(char id);
@@ -50,8 +55,8 @@ class BlitzMessage
     char *render();
     
     /* utility functions */
-    void zero_payload();
-    void zero_flags();
+    void reset();
+    
 };
 
 #endif
