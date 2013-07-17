@@ -137,11 +137,5 @@ char *blitz_payload::render(char *dest) {
 	dest[15] = low_b[3];
 	dest[16] = '\0';
 	
-	/*
-	strcpy(high_a, dest);
-	strcpy(high_b, dest + 4);
-	strcpy(low_a, dest + 8);
-	strcpy(low_b, dest + 12);
-	*/
 	return dest;
 }
