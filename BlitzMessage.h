@@ -19,6 +19,8 @@ class BlitzMessage
 {
     private:
         char *m_payload;
+		long long m_rawPayload;
+		int m_payloadIndex;
         bool *m_flags;
         char m_id;
         char m_meta;
