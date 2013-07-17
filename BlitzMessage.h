@@ -13,18 +13,18 @@
     #define FLAG_LENGTH 5
     #define PAYLOAD_LENGTH 16
     #define PAYLOAD_BITS 64
-	
-	// TODO define these per board (arduinos vs Due)
-	#define BLITZ_CHAR_LENGTH 8
-	#define BLITZ_INT_LENGTH 16
-	#define BLITZ_LONG_LENGTH 32
+    
+    // TODO define these per board (arduinos vs Due)
+    #define BLITZ_CHAR_LENGTH 8
+    #define BLITZ_INT_LENGTH 16
+    #define BLITZ_LONG_LENGTH 32
     
 class BlitzMessage
 {
     private:
         char *m_payload;
-		long long m_rawPayload;
-		int m_payloadIndex;
+        long long m_rawPayload;
+        int m_payloadIndex;
         bool *m_flags;
         char m_id;
         char m_meta;
