@@ -8,13 +8,12 @@
  */
 
 #ifndef _BLITZ_MESSAGE_DEFINES_
+
+    #define _BLITZ_MESSAGE_DEFINES_
     #define FLAG_LENGTH 5
     #define PAYLOAD_LENGTH 16
     #define PAYLOAD_BITS 64
     
-    #define _BLITZ_MESSAGE_DEFINES_
-#endif
-
 class BlitzMessage
 {
     private:
@@ -23,6 +22,8 @@ class BlitzMessage
         char m_id;
         char m_meta;
         long m_timestamp;
+        
+        unsigned long long m_rawPayload;
         
     public:
         BlitzMessage(char id);
@@ -45,4 +46,7 @@ class BlitzMessage
     
     /* utility functions */
     void zero_payload();
+    void zero_flags();
 }
+
+#endif
