@@ -22,15 +22,13 @@
 class BlitzMessage
 {
     private:
-        char *m_payload;
-        long long m_rawPayload;
-        int m_payloadIndex;
         bool *m_flags;
         char m_id;
         char m_meta;
-        long m_timestamp;
-        
+        long m_timestamp;        
         unsigned long long m_rawPayload;
+        char *m_payload;
+        int m_payloadIndex;
         
     public:
         BlitzMessage(char id);
@@ -46,7 +44,7 @@ class BlitzMessage
     bool pack(char* data, int precision);
     
     /* flag setting functions */
-    void set_flag(int flag_id, bool state);
+    bool set_flag(int flag_id, bool state);
     
     /* sending functions */
     char *render();
@@ -54,6 +52,6 @@ class BlitzMessage
     /* utility functions */
     void zero_payload();
     void zero_flags();
-}
+};
 
 #endif

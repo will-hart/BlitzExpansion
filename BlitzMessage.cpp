@@ -6,11 +6,9 @@
  * 
  *  The use of this software is at your own risk, no warranty is given or implied 
  */
-
-#ifndef _BlitzMessage
  
-#include "blitz_message.h"
-#include "Arduino.h"
+#include "BlitzMessage.h"
+//#include "Arduino.h"
 
 /* packing functions */
 bool BlitzMessage::pack(bool data) { 
@@ -94,8 +92,8 @@ bool BlitzMessage::pack(long data, int precision) { return false; }
 bool BlitzMessage::pack(char* data, int precision) { return false; }
 
 /* flag setting functions */
-void BlitzMessage::set_flag(int flag_id, bool state) {
-    if (flag_id < 0 || flag_id > MAX_FLAGS) {
+bool BlitzMessage::set_flag(int flag_id, bool state) {
+    if (flag_id < 0 || flag_id > FLAG_LENGTH) {
         return false;
     }
     
