@@ -8,9 +8,9 @@
 class blitz_payload
 {
 	private:
-		long m_high;
-		long m_low;
-		long m_length;
+		unsigned long m_high;
+		unsigned long m_low;
+		int m_length;
 		
 		static const int MaxLength = 64;
 		
@@ -24,7 +24,7 @@ class blitz_payload
 		bool pack(unsigned int set_int, int precision);
 		bool pack(unsigned long set_long, int precision);
 		
-		char *to_char();
+		char *render(char *dest);
 };
 
 

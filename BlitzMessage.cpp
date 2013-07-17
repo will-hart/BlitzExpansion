@@ -70,7 +70,8 @@ char *BlitzMessage::render(char* dest) {
 	sprintf(time_str, "%08x", this->m_timestamp);
 	
     // pad to the end with 0s
-    char *raw_payload = this->m_payload->to_char();
+    char raw_payload[17];
+	this->m_payload->render(raw_payload);
 	
 	// build the message by appending the parts
 	strncat(dest, id_str, 2);

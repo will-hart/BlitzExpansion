@@ -100,22 +100,48 @@ bool blitz_payload::pack(unsigned long set_long, int precision) {
     return true;
 }
 
-char *blitz_payload::to_char() {
-	char first[9];
-	char second[9];
-	char final[17];
+char *blitz_payload::render(char *dest) {
 	
 	// pad out the longs
 	while (this->m_length < 63) {
 		this->_set_bit_safe(false);
 		++this->m_length;
 	}
-		
-	sprintf(first, "%08lx", this->m_high);
-	sprintf(second, "%08lx", this->m_low);
 	
-	strcpy(first, final);
-	strcpy(second, final + 8);
+	// break the longs into ints to allow sprintf conversion to hex
+	char high_a[5];
+	char high_b[5];
+	char low_a[5];
+	char low_b[5];
+
+	sprintf(high_a, "%04x", (unsigned int)(this->m_high >> 16));
+	sprintf(high_b, "%04x", (unsigned int)(this->m_high & 0x0000FFFF));
+	sprintf(low_a, "%04x", (unsigned int)(this->m_low >> 16));
+	sprintf(low_b, "%04x", (unsigned int)(this->m_low & 0x0000FFFF));
 	
-	return final;
+	dest[0] = high_a[0];
+	dest[1] = high_a[1];
+	dest[2] = high_a[2];
+	dest[3] = high_a[3];
+	dest[4] = high_b[0];
+	dest[5] = high_b[1];
+	dest[6] = high_b[2];
+	dest[7] = high_b[3];
+	dest[8] = low_a[0];
+	dest[9] = low_a[1];
+	dest[10] = low_a[2];
+	dest[11] = low_a[3];
+	dest[12] = low_b[0];
+	dest[13] = low_b[1];
+	dest[14] = low_b[2];
+	dest[15] = low_b[3];
+	dest[16] = '\0';
+	
+	/*
+	strcpy(high_a, dest);
+	strcpy(high_b, dest + 4);
+	strcpy(low_a, dest + 8);
+	strcpy(low_b, dest + 12);
+	*/
+	return dest;
 }
