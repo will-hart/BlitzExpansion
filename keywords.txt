@@ -2,8 +2,10 @@
 BlitzMessage    KEYWORD1
 
 ### functions
-pack    KEYWORD2
-send_flag   KEYWORD2
-send_serial KEYWORD2
-send_wire   KEYWORD2
+pack            KEYWORD2
+render          KEYWORD2
+send_flag       KEYWORD2
+send_serial     KEYWORD2
+send_wire       KEYWORD2
+zero_flags      KEYWORD2
 zero_payload    KEYWORD2

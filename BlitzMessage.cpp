@@ -7,7 +7,10 @@
  *  The use of this software is at your own risk, no warranty is given or implied 
  */
 
+#ifndef _BlitzMessage
+ 
 #include "blitz_message.h"
+#include "Arduino.h"
 
 /* packing functions */
 bool BlitzMessage::pack(bool data) { 
@@ -89,6 +92,14 @@ void BlitzMessage::zero_payload()
     }
 }
 
+void BlitzMessage::zero_flags() 
+{
+    // initialise flags
+    for (int i = 0; i < FLAG_LENGTH; ++i) {
+        m_flags[i] = false;
+    }
+}
+
 /* Constructor */
 BlitzMessage::BlitzMessage(char id)
 {
@@ -97,11 +108,10 @@ BlitzMessage::BlitzMessage(char id)
 	m_payloadIndex = 0;
     m_payload = new char[PAYLOAD_LENGTH];
     m_flags = new bool[FLAG_LENGTH];
+    m_meta = 0;
+    m_timestamp = 0;
+    m_rawPayload = 0;
     
-    // initialise flags
-    for (int i = 0; i < FLAG_LENGTH; ++i) {
-        m_flags[i] = false;
-    }
-    
+    this->zero_flags();
     this->zero_payload();
 }

@@ -27,7 +27,12 @@ BlitzMessage is provided under a AGPLv3 license.
         result = result && provider.set_flag(1, true);
         
         if (result) {
-            Serial.writeln(provider.render());
+            // for initial development:
+            Serial.println(provider.render());
+            
+            
+            // for production:
+            // Wire.write(provider.render());
         } else {
             Serial.write("Error packing message");
         }
