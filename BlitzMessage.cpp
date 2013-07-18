@@ -9,8 +9,8 @@
  
 #include "BlitzMessage.h"
 
-#include "Arduino.h"
-//#include <stdio.h>
+//#include "Arduino.h"
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -20,90 +20,121 @@ bool BlitzMessage::pack(bool data) {
 }
 
 bool BlitzMessage::pack(char data) {
-	return this->m_payload->pack((unsigned)data, 8);
+    return this->m_payload->pack((unsigned)data, 8);
 }
 
-bool BlitzMessage::pack(char data, int precision) {
+bool BlitzMessage::pack(char data, short precision) {
     return this->m_payload->pack((unsigned)data, precision);
 }
 
 bool BlitzMessage::pack(unsigned char data) {
-	return this->m_payload->pack(data, 8);
+    return this->m_payload->pack(data, 8);
 }
 
-bool BlitzMessage::pack(unsigned char data, int precision) {
+bool BlitzMessage::pack(unsigned char data, short precision) {
     return this->m_payload->pack(data, precision);
 }
 
 bool BlitzMessage::pack(int data) {
-	return this->m_payload->pack((unsigned)data, 16);
+    return this->m_payload->pack((unsigned)data, 16);
 }
 
-bool BlitzMessage::pack(int data, int precision) {
+bool BlitzMessage::pack(int data, short precision) {
     return this->m_payload->pack((unsigned)data, precision);
 }
 
 bool BlitzMessage::pack(unsigned int data) {
-	return this->m_payload->pack(data, 16);
+    return this->m_payload->pack(data, 16);
 }
 
-bool BlitzMessage::pack(unsigned int data, int precision) {
+bool BlitzMessage::pack(unsigned int data, short precision) {
     return this->m_payload->pack(data, precision);
 }
 
 bool BlitzMessage::pack(unsigned long data) {
-	return this->m_payload->pack(data, 32);
+    return this->m_payload->pack(data, 32);
 }
 
-bool BlitzMessage::pack(unsigned long data, int precision) {
+bool BlitzMessage::pack(unsigned long data, short precision) {
     return this->m_payload->pack(data, precision);
 }
 
 bool BlitzMessage::pack(long data) {
-	return this->m_payload->pack((unsigned)data, 32);
+    return this->m_payload->pack((unsigned)data, 32);
 }
 
-bool BlitzMessage::pack(long data, int precision) {
+bool BlitzMessage::pack(long data, short precision) {
     return this->m_payload->pack((unsigned)data, precision);
 }
 
 /* flag setting functions */
-bool BlitzMessage::set_flag(int flag_id, bool state) {
-    if (flag_id < 0 || flag_id > FLAG_LENGTH) {
+bool BlitzMessage::set_flag(char flag_id, bool state) {
+    if (flag_id < 0 || flag_id >= FLAG_LENGTH) {
         return false;
     }
     
-    this->m_flags[flag_id] = state;
+    char flag_mask = 1 << (FLAG_LENGTH - flag_id - 1);
+    this->m_meta |= flag_mask; 
+
     return true;
 }
 
 /* sending functions */
 char *BlitzMessage::render(char* dest) { 
-		
-	// build the id 
-	char id_str[3];
-	sprintf(id_str, "%02x", this->m_id);
 	
-	// build the meta
-	char meta_str[3];
-	sprintf(meta_str, "%02x", this->m_meta);
-	
-	// build the timestamp
-	this->m_timestamp = 1001020;
-	char time_str[9];
-	sprintf(time_str, "%08lx", this->m_timestamp);
-	
+    // build the id 
+    char id_str[3];
+    sprintf(id_str, "%02x", this->m_id);
+	dest[0] = id_str[0];
+	dest[1] = id_str[1];
+    
+    // build the meta
+    char meta_str[3];
+    sprintf(meta_str, "%02x", this->m_meta);
+	dest[2] = meta_str[0];
+	dest[3] = meta_str[1];
+    
+    // build the timestamp
+    this->m_timestamp = 1001020;
+    char time_str[9];
+    sprintf(time_str, "%08lx", this->m_timestamp);
+	dest[4] = time_str[0];
+	dest[5] = time_str[1];
+	dest[6] = time_str[2];
+	dest[7] = time_str[3];
+	dest[8] = time_str[4];
+	dest[9] = time_str[5];
+	dest[10] = time_str[6];
+	dest[11] = time_str[7];
+    
     // pad to the end with 0s
-    char raw_payload[17];
-	this->m_payload->render(raw_payload);
-	
-	// build the message by appending the parts
-	strncat(dest, id_str, 2);
-	strncat(dest, meta_str, 2);
-	strncat(dest, time_str, 8);
-	strncat(dest, raw_payload, 16);
-	
-	// reset the message for the next round :)
+    char raw_payload[17] = "0000000000000000";	
+    this->m_payload->render(raw_payload);
+	dest[12] = raw_payload[0];
+	dest[13] = raw_payload[1];
+	dest[14] = raw_payload[2];
+	dest[15] = raw_payload[3];
+	dest[16] = raw_payload[4];
+	dest[17] = raw_payload[5];
+	dest[18] = raw_payload[6];
+	dest[19] = raw_payload[7];
+	dest[20] = raw_payload[8];
+	dest[21] = raw_payload[9];
+	dest[22] = raw_payload[10];
+	dest[23] = raw_payload[11];
+	dest[24] = raw_payload[12];
+	dest[25] = raw_payload[13];
+	dest[26] = raw_payload[14];
+	dest[27] = raw_payload[15];
+    
+    /* build the message by appending the parts
+    strncat(dest, id_str, 2);
+    strncat(dest, meta_str, 2);
+    strncat(dest, time_str, 8);
+    strncat(dest, raw_payload, 16);*/
+	dest[28] = '\0';
+    
+    // reset the message for the next round :)
     this->reset();
     return dest;
 }
@@ -112,16 +143,14 @@ char *BlitzMessage::render(char* dest) {
 void BlitzMessage::reset() {
     free(this->m_payload);
     this->reset_flags();
-	
-	this->m_payload = new blitz_payload();
+    this->m_payload = new blitz_payload();
 }
 
 void BlitzMessage::reset_flags() 
 {
-    // initialise flags
-    for (int i = 0; i < FLAG_LENGTH; ++i) {
-        this->m_flags[i] = false;
-    }
+    // initialise flags to "false"
+    char flag_mask = 0b11100000;
+    this->m_meta &= flag_mask;
 }
 
 /* Constructor */
@@ -129,7 +158,6 @@ BlitzMessage::BlitzMessage(char id)
 {
     this->m_id = id;
     this->m_payload = new blitz_payload();
-    this->m_flags = new bool[FLAG_LENGTH];
     this->m_meta = 0;
     this->m_timestamp = 0;
     

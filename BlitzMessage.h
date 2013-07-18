@@ -26,10 +26,8 @@
 class BlitzMessage
 {
     private:
-        bool *m_flags;
         char m_id;
         char m_meta;
-        
         blitz_u32 m_timestamp;       
         blitz_payload *m_payload;
         
@@ -41,21 +39,21 @@ class BlitzMessage
     
     /* packing functions */
     bool pack(bool data);
-    bool pack(unsigned char data, int precision);
+    bool pack(unsigned char data, short precision);
     bool pack(unsigned char data);
-    bool pack(char data, int precision);
+    bool pack(char data, short precision);
     bool pack(char data);
-    bool pack(unsigned int data, int precision);
+    bool pack(unsigned int data, short precision);
     bool pack(unsigned int data);
-    bool pack(int data, int precision);
+    bool pack(int data, short precision);
     bool pack(int data);
-    bool pack(unsigned long data, int precision);
+    bool pack(unsigned long data, short precision);
     bool pack(unsigned long data);
-    bool pack(long data, int precision);
+    bool pack(long data, short precision);
     bool pack(long data);
     
     /* flag setting functions */
-    bool set_flag(int flag_id, bool state);
+    bool set_flag(char flag_id, bool state);
     
     /* sending functions */
     char *render(char *dest);
