@@ -29,7 +29,8 @@ class BlitzMessage
         bool *m_flags;
         char m_id;
         char m_meta;
-        long m_timestamp;
+        
+        blitz_u32 m_timestamp;       
         blitz_payload *m_payload;
         
         /* utility functions */

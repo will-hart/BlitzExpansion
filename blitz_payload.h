@@ -5,14 +5,24 @@
 //#include <stdio.h>
 #include <string.h>
 
+#ifdef _SAM3XA_
+typedef unsigned int blitz_u32;
+#else
+typedef unsigned long blitz_u32;
+#endif
+
+typedef unsigned short blitz_u16;
+typedef unsigned char blitz_u8;
+
 class blitz_payload
 {
 	private:
-		unsigned long m_high;
-		unsigned long m_low;
-		int m_length;
-		
-		static const int MaxLength = 64;
+        
+		static const blitz_u16 MaxLength = 64;
+        
+		blitz_u32 m_high;
+		blitz_u32 m_low;
+		blitz_u16 m_length;
 		
 		void _set_bit_safe(bool set_bit);
 		
