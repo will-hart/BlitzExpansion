@@ -19,12 +19,28 @@ bool BlitzMessage::pack(bool data) {
     return this->m_payload->pack(data);
 }
 
+bool BlitzMessage::pack(char data) {
+	return this->m_payload->pack((unsigned)data, 8);
+}
+
+bool BlitzMessage::pack(char data, int precision) {
+    return this->m_payload->pack((unsigned)data, precision);
+}
+
 bool BlitzMessage::pack(unsigned char data) {
 	return this->m_payload->pack(data, 8);
 }
 
 bool BlitzMessage::pack(unsigned char data, int precision) {
     return this->m_payload->pack(data, precision);
+}
+
+bool BlitzMessage::pack(int data) {
+	return this->m_payload->pack((unsigned)data, 16);
+}
+
+bool BlitzMessage::pack(int data, int precision) {
+    return this->m_payload->pack((unsigned)data, precision);
 }
 
 bool BlitzMessage::pack(unsigned int data) {
@@ -41,6 +57,14 @@ bool BlitzMessage::pack(unsigned long data) {
 
 bool BlitzMessage::pack(unsigned long data, int precision) {
     return this->m_payload->pack(data, precision);
+}
+
+bool BlitzMessage::pack(long data) {
+	return this->m_payload->pack((unsigned)data, 32);
+}
+
+bool BlitzMessage::pack(long data, int precision) {
+    return this->m_payload->pack((unsigned)data, precision);
 }
 
 /* flag setting functions */

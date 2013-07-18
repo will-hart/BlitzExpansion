@@ -42,10 +42,16 @@ class BlitzMessage
     bool pack(bool data);
     bool pack(unsigned char data, int precision);
     bool pack(unsigned char data);
+    bool pack(char data, int precision);
+    bool pack(char data);
     bool pack(unsigned int data, int precision);
     bool pack(unsigned int data);
+    bool pack(int data, int precision);
+    bool pack(int data);
     bool pack(unsigned long data, int precision);
     bool pack(unsigned long data);
+    bool pack(long data, int precision);
+    bool pack(long data);
     
     /* flag setting functions */
     bool set_flag(int flag_id, bool state);

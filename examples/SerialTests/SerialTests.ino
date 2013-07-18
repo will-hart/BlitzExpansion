@@ -6,6 +6,7 @@ void setup() {
 
 void loop() {
   BlitzMessage msg(2);
+  msg.pack(729, 16);
   
   // get the message
   char formatted_message[29];
