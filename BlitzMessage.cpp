@@ -69,12 +69,20 @@ bool BlitzMessage::pack(long data, short precision) {
 
 /* flag setting functions */
 bool BlitzMessage::set_flag(char flag_id, bool state) {
-    if (flag_id < 0 || flag_id >= FLAG_LENGTH) {
+    if (flag_id < 1 || flag_id > FLAG_LENGTH) {
         return false;
     }
     
-    char flag_mask = 1 << (FLAG_LENGTH - flag_id - 1);
-    this->m_meta |= flag_mask; 
+    unsigned char flag_mask = 1 << (FLAG_LENGTH - flag_id);
+    
+    if (state)
+    {
+        this->m_meta |= flag_mask; 
+    }
+    else
+    {
+        this->m_meta &= ~flag_mask;
+    }
 
     return true;
 }
@@ -151,6 +159,20 @@ void BlitzMessage::reset_flags()
     // initialise flags to "false"
     char flag_mask = 0b11100000;
     this->m_meta &= flag_mask;
+}
+
+bool BlitzMessage::set_type(char type_id) 
+{
+    if (type_id > 7 || type_id < 0) {
+        // ID must be a char between 0 - 7.  do not set
+        return false;
+    }
+    
+    unsigned char type_mask = type_id << 5;
+    unsigned char var_mask = 0b00011111;
+    
+    this->m_meta &= var_mask;
+    this->m_meta |= type_mask;
 }
 
 /* Constructor */

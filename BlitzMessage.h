@@ -22,6 +22,14 @@
 #define BLITZ_INT_LENGTH 16
 #define BLITZ_LONG_LENGTH 32
 
+#define BLITZ_START 0
+#define BLITZ_STOP 1
+#define BLITZ_ACK 2
+#define BLITZ_ERROR 3
+#define BLITZ_INSTRUCTION 4
+#define BLITZ_DATA 5
+#define BLITZ_TRANSMIT 6
+#define BLITZ_EXTENDED 7
 
 class BlitzMessage
 {
@@ -37,6 +45,8 @@ class BlitzMessage
     public:
         BlitzMessage(char id);
     
+    bool set_type(char type_id);
+    
     /* packing functions */
     bool pack(bool data);
     bool pack(unsigned char data, short precision);
@@ -51,6 +61,7 @@ class BlitzMessage
     bool pack(unsigned long data);
     bool pack(long data, short precision);
     bool pack(long data);
+    
     
     /* flag setting functions */
     bool set_flag(char flag_id, bool state);

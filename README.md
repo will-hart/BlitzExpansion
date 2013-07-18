@@ -12,28 +12,39 @@ BlitzMessage is provided under a AGPLv3 license.
 
 ## Usage
 
+    #include <BlitzMessage.h>
+    
     void setup() {
-        provider = BlitzMessage(1);
-        Serial.begin(9600);
+      Serial.begin(9600);
     }
     
     void loop() {
-        int one = 1;
-        
-        // add an integer with 16 bit precision into the message payload (max 64 bits)
-        result = provider.pack(one, 16);
-        
-        // set one of the five flags to true
-        result = result && provider.set_flag(1, true);
-        
-        if (result) {
-            // for initial development:
-            Serial.println(provider.render());
-            
-            
-            // for production:
-            // Wire.write(provider.render());
-        } else {
-            Serial.write("Error packing message");
-        }
+      // set up a blitz expansion board message with board ID 2
+      BlitzMessage msg(2);
+      
+      // format the message (currently no variables set)
+      char formatted_message[29];
+      msg.render(formatted_message);
+      
+      // write to serial
+      Serial.println(formatted_message);
+      
+      // rinse for 1 second, repeat
+      delay(1000);
     }
+
+## Examples
+
+Several examples are included - either look in the `[Arduino Folder]/libraries/BlitzMessage/examples` 
+folder or browse through the Sketchbook in the Arduino IDE.
+
+## Speed tests
+
+Running the `Speed_Tests` example I can regularly get the following on the Arduino Due:
+
+ > Generated 10,000 messages in 1.330000013 seconds
+
+On an Arduino Uno R3 I get:
+
+ > Generated 10,000 messages in 7.996000289 seconds
+
