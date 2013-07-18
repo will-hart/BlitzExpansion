@@ -9,8 +9,8 @@
  
 #include "BlitzMessage.h"
 
-//#include "Arduino.h"
-#include <stdio.h>
+#include "Arduino.h"
+//#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -95,7 +95,7 @@ char *BlitzMessage::render(char* dest) {
 	dest[3] = meta_str[1];
     
     // build the timestamp
-    this->m_timestamp = 1001020;
+    this->m_timestamp = millis();
     char time_str[9];
     sprintf(time_str, "%08lx", this->m_timestamp);
 	dest[4] = time_str[0];
