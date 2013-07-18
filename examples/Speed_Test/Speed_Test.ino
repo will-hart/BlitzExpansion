@@ -34,6 +34,6 @@ void loop() {
   long now = millis();
   
   Serial.print("Generated 10,000 messages in ");
-  Serial.print((float)(now - then) / 10000.0f, DEC);
+  Serial.print((float)(now - then) / 1000.0f, DEC);
   Serial.println(" seconds");
 }

@@ -1,4 +1,4 @@
-# BlitzMessage
+# BlitzMessage 1.0
 
 ## About
 
