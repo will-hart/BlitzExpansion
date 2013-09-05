@@ -56,7 +56,7 @@ On an Arduino Uno R3 I get:
 
 ### Version 1.0.1
 
- - `+` Provide BlitzFormattedMessage` type for rendered message outputs
+ - `+` Provide `BlitzFormattedMessage` type for rendered message outputs
  - `~` Change `BlitzMessage::render` to `BlitzMessage::renderInto`
  - `~` Some other minor tweaks
 
