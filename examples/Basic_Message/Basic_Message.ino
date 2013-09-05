@@ -6,10 +6,10 @@ void setup() {
 
 void loop() {
   // set up a blitz expansion board message with board ID 2
-  BlitzMessage msg(2);
+  BlitzMessage msg(0x08);
   
   // format the message (currently no variables set)
-  char formatted_message[29];
+  BlitzFormattedMessage formatted_message;
   msg.render(formatted_message);
   
   // write to serial

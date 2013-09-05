@@ -1,6 +1,6 @@
 #include <BlitzMessage.h>
 
-BlitzMessage message = BlitzMessage(2);
+BlitzMessage message = BlitzMessage(0x08);
 
 void setup() {
   Serial.begin(9600);  
@@ -35,7 +35,7 @@ void loop() {
   message.pack(pin5, 10);
   
   // write out the message
-  char formatted_message[29];
+  BlitzFormattedMessage formatted_message;
   message.render(formatted_message);
   Serial.println(formatted_message);
   
