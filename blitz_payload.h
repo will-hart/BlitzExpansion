@@ -13,7 +13,6 @@ typedef unsigned long blitz_u32;
 
 typedef unsigned short blitz_u16;
 typedef unsigned char blitz_u8;
-typedef unsigned char uchar;
 typedef char BlitzFormattedMessage[29];
 
 class blitz_payload
