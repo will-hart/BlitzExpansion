@@ -26,9 +26,9 @@ BlitzMessage is provided under a AGPLv3 license.
       int var = 457;
       msg.pack(457, 10);
       
-      // format the message
-      char formatted_message[29];
-      msg.render(formatted_message);
+      // format the message and send it to the
+      char formatted_message[30];
+      msg.renderInto(formatted_message);
       
       // write to serial
       Serial.println(formatted_message);

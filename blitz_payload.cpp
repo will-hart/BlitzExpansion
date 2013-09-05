@@ -34,7 +34,7 @@ void blitz_payload::_set_bit_safe(bool set_bit) {
     this->m_length++;
 }
 
-bool blitz_payload::pack(unsigned char set_char, short precision) {    
+bool blitz_payload::pack(unsigned char set_char, blitz_u16 precision) {    
     if (precision + this->m_length >= 63 ||
         precision > 8) {
         return false;
@@ -56,7 +56,7 @@ bool blitz_payload::pack(unsigned char set_char, short precision) {
     return true;
 }
 
-bool blitz_payload::pack(unsigned int set_int, short precision) {
+bool blitz_payload::pack(unsigned int set_int, blitz_u16 precision) {
     if (precision + this->m_length >= 63 ||
         precision > 16) {
         return false;
@@ -78,7 +78,7 @@ bool blitz_payload::pack(unsigned int set_int, short precision) {
     return true;
 }
 
-bool blitz_payload::pack(unsigned long set_long, short precision) {
+bool blitz_payload::pack(unsigned long set_long, blitz_u16 precision) {
     if (precision + this->m_length >= 63 ||
         precision > 32) {
         return false;
@@ -119,6 +119,8 @@ char *blitz_payload::render(char *dest) {
     sprintf(low_a, "%04x", (unsigned int)(this->m_low >> 16));
     sprintf(low_b, "%04x", (unsigned int)(this->m_low & 0x0000FFFF));
     
+    // slightly hackishly copy all the variables over directly 
+    // (instead of using memset or similar)
     dest[0] = high_a[0];
     dest[1] = high_a[1];
     dest[2] = high_a[2];
@@ -135,7 +137,6 @@ char *blitz_payload::render(char *dest) {
     dest[13] = low_b[1];
     dest[14] = low_b[2];
     dest[15] = low_b[3];
-    dest[16] = '\0';
     
     return dest;
 }
