@@ -22,7 +22,11 @@ BlitzMessage is provided under a AGPLv3 license.
       // set up a blitz expansion board message with board ID 2
       BlitzMessage msg(2);
       
-      // format the message (currently no variables set)
+      // add a random number at 10 bit precision
+      int var = 457;
+      msg.pack(457, 10);
+      
+      // format the message
       char formatted_message[29];
       msg.render(formatted_message);
       
