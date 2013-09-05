@@ -13,6 +13,7 @@ typedef unsigned long blitz_u32;
 
 typedef unsigned short blitz_u16;
 typedef unsigned char blitz_u8;
+typedef char BlitzFormattedMessage[29];
 
 class blitz_payload
 {
@@ -30,9 +31,9 @@ class blitz_payload
         blitz_payload();
         
         bool pack(bool set_bit);
-        bool pack(unsigned char set_char, short precision);
-        bool pack(unsigned int set_int, short precision);
-        bool pack(unsigned long set_long, short precision);
+        bool pack(unsigned char set_char, blitz_u16 precision);
+        bool pack(unsigned int set_int, blitz_u16 precision);
+        bool pack(unsigned long set_long, blitz_u16 precision);
         
         char *render(char *dest);
 };

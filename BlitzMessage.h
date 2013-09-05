@@ -67,7 +67,7 @@ class BlitzMessage
     bool set_flag(char flag_id, bool state);
     
     /* sending functions */
-    char *render(char *dest);
+    char *renderInto(char *dest);
     
     /* utility functions */
     void reset();

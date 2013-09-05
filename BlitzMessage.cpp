@@ -88,7 +88,7 @@ bool BlitzMessage::set_flag(char flag_id, bool state) {
 }
 
 /* sending functions */
-char *BlitzMessage::render(char* dest) { 
+char *BlitzMessage::renderInto(char* dest) { 
 	
     // build the id 
     char id_str[3];
@@ -116,7 +116,7 @@ char *BlitzMessage::render(char* dest) {
 	dest[11] = time_str[7];
     
     // pad to the end with 0s
-    char raw_payload[17] = "0000000000000000";	
+    char raw_payload[16] = "000000000000000";	
     this->m_payload->render(raw_payload);
 	dest[12] = raw_payload[0];
 	dest[13] = raw_payload[1];
@@ -134,13 +134,7 @@ char *BlitzMessage::render(char* dest) {
 	dest[25] = raw_payload[13];
 	dest[26] = raw_payload[14];
 	dest[27] = raw_payload[15];
-    
-    /* build the message by appending the parts
-    strncat(dest, id_str, 2);
-    strncat(dest, meta_str, 2);
-    strncat(dest, time_str, 8);
-    strncat(dest, raw_payload, 16);*/
-	dest[28] = '\0';
+    dest[28] = '\0';
     
     // reset the message for the next round :)
     this->reset();

@@ -1,6 +1,6 @@
 #include <BlitzMessage.h>
 
-BlitzMessage message = BlitzMessage(2);
+BlitzMessage message = BlitzMessage(0x08);
 
 void setup() {
   Serial.begin(9600);  
@@ -27,8 +27,8 @@ void loop() {
     message.pack(data16, 16);
     
     // render and discard the message
-    char formatted_message[29];
-    message.render(formatted_message);
+    BlitzFormattedMessage formatted_message;
+    message.renderInto(formatted_message);
   }
   
   long now = millis();

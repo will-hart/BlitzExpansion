@@ -1,4 +1,4 @@
-# BlitzMessage 1.0
+# BlitzMessage 1.0.1
 
 ## About
 
@@ -27,13 +27,13 @@ BlitzMessage is provided under a AGPLv3 license.
       msg.pack(457, 10);
       
       // format the message
-      char formatted_message[29];
-      msg.render(formatted_message);
+      BlitzFormattedMessage formatted_message;
+      msg.renderInto(formatted_message);
       
       // write to serial
       Serial.println(formatted_message);
       
-      // rinse for 1 second, repeat
+      // twiddle thumbs
       delay(1000);
     }
 
@@ -52,3 +52,14 @@ On an Arduino Uno R3 I get:
 
  > Generated 10,000 messages in 7.996000289 seconds
 
+## Change log
+
+### Version 1.0.1
+
+ - `+` Provide BlitzFormattedMessage` type for rendered message outputs
+ - `~` Change `BlitzMessage::render` to `BlitzMessage::renderInto`
+ - `~` Some other minor tweaks
+
+### Version 1.0
+
+- `+` All features! See the examples folder for usage
