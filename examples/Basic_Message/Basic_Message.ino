@@ -10,7 +10,7 @@ void loop() {
   
   // format the message (currently no variables set)
   BlitzFormattedMessage formatted_message;
-  msg.render(formatted_message);
+  msg.renderInto(formatted_message);
   
   // write to serial
   Serial.println(formatted_message);

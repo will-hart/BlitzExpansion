@@ -36,7 +36,7 @@ void loop() {
   
   // write out the message
   BlitzFormattedMessage formatted_message;
-  message.render(formatted_message);
+  message.renderInto(formatted_message);
   Serial.println(formatted_message);
   
   // rinse for 1 second, repeat
