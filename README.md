@@ -1,4 +1,4 @@
-# BlitzMessage 1.0
+# BlitzMessage 1.0.1
 
 ## About
 
@@ -52,3 +52,14 @@ On an Arduino Uno R3 I get:
 
  > Generated 10,000 messages in 7.996000289 seconds
 
+## Change log
+
+### Version 1.0.1
+
+ - `+` Provide BlitzFormattedMessage` type for rendered message outputs
+ - `~` Change `BlitzMessage::render` to `BlitzMessage::renderInto`
+ - `~` Some other minor tweaks
+
+### Version 1.0
+
+- `+` All features! See the examples folder for usage
