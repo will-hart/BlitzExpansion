@@ -26,14 +26,14 @@ BlitzMessage is provided under a AGPLv3 license.
       int var = 457;
       msg.pack(457, 10);
       
-      // format the message and send it to the
-      char formatted_message[30];
+      // format the message
+      BlitzFormattedMessage formatted_message;
       msg.renderInto(formatted_message);
       
       // write to serial
       Serial.println(formatted_message);
       
-      // rinse for 1 second, repeat
+      // twiddle thumbs
       delay(1000);
     }
 
