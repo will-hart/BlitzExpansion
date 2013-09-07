@@ -1,4 +1,4 @@
-#include <BlitzMessage.h>
+#include <BlitzExpansion.h>
 
 BlitzMessage message = BlitzMessage(0x08);
 
@@ -13,11 +13,11 @@ void loop() {
   for (int i = 0; i < 10000; i++) 
   {
     // check for our alerts and set a flag
-    message.set_flag(1, true);
-    message.set_flag(2, false);
-    message.set_flag(3, true);
-    message.set_flag(4, false);
-    message.set_flag(5, true);
+    message.setFlag(1, true);
+    message.setFlag(2, false);
+    message.setFlag(3, true);
+    message.setFlag(4, false);
+    message.setFlag(5, true);
   
     // pack in the ADCs to 10 bit precision and one bit spacing between each
     unsigned int data16 = 0xFFFF;

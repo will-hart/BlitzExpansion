@@ -1,8 +1,7 @@
 /* This version drops I2C support and uses 
 Serial at 57600 instead */
 
-#include "BlitzMessage.h"
-#include "BlitzExpansion.h"
+#include <BlitzExpansion.h>
 
 #define SLAVE_ADDRESS 0x08
 #define BUFFER_SIZE 180
@@ -73,11 +72,11 @@ void logCurrentMessage(void) {
   builder.pack(adc[2], 10);
   
   // set the digital flags
-  builder.set_flag(0, digitalRead(DIG1_PIN));
-  builder.set_flag(1, digitalRead(DIG2_PIN));
-  builder.set_flag(2, digitalRead(DIG3_PIN));
-  builder.set_flag(3, digitalRead(DIG4_PIN));
-  builder.set_flag(4, digitalRead(DIG5_PIN));
+  builder.set_flag(1, digitalRead(DIG1_PIN));
+  builder.set_flag(2, digitalRead(DIG2_PIN));
+  builder.set_flag(3, digitalRead(DIG3_PIN));
+  builder.set_flag(4, digitalRead(DIG4_PIN));
+  builder.set_flag(5, digitalRead(DIG5_PIN));
   
   // render the message
   builder.renderInto(rawMessage);

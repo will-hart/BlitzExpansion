@@ -1,4 +1,4 @@
-#include <BlitzMessage.h>
+#include <BlitzExpansion.h>
 
 void setup() {
   Serial.begin(9600);
