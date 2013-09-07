@@ -186,6 +186,10 @@ bool BlitzMessage::setType(char type_id)
     this->m_meta |= type_mask;
 }
 
+char getType(char *message) {
+    return message[1] >> 5;
+}
+
 /* Constructor */
 BlitzMessage::BlitzMessage(char id)
 {

@@ -69,6 +69,9 @@ class BlitzMessage
     /* sending functions */
     void renderInto(char *dest);
     
+    /* receiving functions */
+    char getType(char *message);
+    
     /* utility functions */
     void reset();
     
