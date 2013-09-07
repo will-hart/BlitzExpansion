@@ -27,10 +27,10 @@ class BlitzExpansion
         
         void sendId();
         void sendLog();
-        void sendStatus();
         void handleSerial();
         
     public:
+        void sendStatus();
         BlitzExpansion(char id, int bufferSize, int frequency);
         void begin(void (*)(void), HardwareSerial *serial);
         void sample();

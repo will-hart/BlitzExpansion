@@ -7,6 +7,12 @@
 BlitzExpansion::BlitzExpansion(char id, int bufferSize, int frequency) {
     m_id = id;
     this->m_messageBuffer = new char*[bufferSize];
+    
+    // pre-seed the buffer
+    for (int i = 0; i < bufferSize; ++i) {
+        this->m_messageBuffer[i] = new char[29];
+    }
+    
     this->m_currentIdx = 0;
     this->m_sendIdx = 0;
     this->m_maxIdx = bufferSize;
@@ -40,7 +46,7 @@ void BlitzExpansion::begin(void (*function)(void), HardwareSerial *serial)
 void BlitzExpansion::sample() {
     // log a sample with the user defined function
     this->m_onSample();
-    
+        
     // now delay (listening to serial) until the sampling
     // frequency delay rate is met
     long target = millis() + this->m_frequencyDelay;
@@ -60,11 +66,21 @@ void BlitzExpansion::sample() {
  * to the serial buffer, incrementing indices as required
  */
 void BlitzExpansion::log(BlitzFormattedMessage message) {
-    this->m_messageBuffer[this->m_currentIdx] = message;
+
+    // allocate memory for the new message
+    char *savedMessage = new BlitzFormattedMessage;
+    strcpy(savedMessage, message);
+    
+    // delete the previous item
+    //delete[] this->m_messageBuffer[this->m_currentIdx];
+    free(this->m_messageBuffer[this->m_currentIdx]);
+    
+    // save the new item to the buffer
+    this->m_messageBuffer[this->m_currentIdx] = savedMessage;
     ++this->m_currentIdx;
     
     // check for wrapping
-    if (this->m_currentIdx > this->m_maxIdx) {
+    if (this->m_currentIdx >= this->m_maxIdx) {
         this->m_currentIdx = 0;
     }
     
@@ -110,12 +126,11 @@ void BlitzExpansion::sendId() {
 }
 
 /**
- * Sends the log of messages over serial
+ * Sends the backlog of messages over serial
  */
 void BlitzExpansion::sendLog() {
     while (this->m_sendIdx != this->m_currentIdx) {
-        this->m_serial->println(
-            this->m_messageBuffer[this->m_sendIdx]);
+        this->m_serial->println(this->m_messageBuffer[this->m_sendIdx]);
         ++this->m_sendIdx;
       
         // wrap sendIdx around if required
