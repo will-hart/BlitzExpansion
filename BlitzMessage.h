@@ -40,12 +40,12 @@ class BlitzMessage
         blitz_payload *m_payload;
         
         /* utility functions */
-        void reset_flags();
+        void resetFlags();
         
     public:
         BlitzMessage(char id);
     
-    bool set_type(char type_id);
+    bool setType(char type_id);
     
     /* packing functions */
     bool pack(bool data);
@@ -64,10 +64,10 @@ class BlitzMessage
     
     
     /* flag setting functions */
-    bool set_flag(char flag_id, bool state);
+    bool setFlag(char flag_id, bool state);
     
     /* sending functions */
-    char *renderInto(char *dest);
+    void renderInto(char *dest);
     
     /* utility functions */
     void reset();

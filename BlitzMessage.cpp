@@ -24,6 +24,9 @@ bool BlitzMessage::pack(char data) {
 }
 
 bool BlitzMessage::pack(char data, short precision) {
+    if (precision > 8) {
+        precision = 8;
+    }
     return this->m_payload->pack((unsigned)data, precision);
 }
 
@@ -32,6 +35,9 @@ bool BlitzMessage::pack(unsigned char data) {
 }
 
 bool BlitzMessage::pack(unsigned char data, short precision) {
+    if (precision > 8) {
+        precision = 8;
+    }
     return this->m_payload->pack(data, precision);
 }
 
@@ -40,6 +46,9 @@ bool BlitzMessage::pack(int data) {
 }
 
 bool BlitzMessage::pack(int data, short precision) {
+    if (precision > 16) {
+        precision = 16;
+    }
     return this->m_payload->pack((unsigned)data, precision);
 }
 
@@ -48,6 +57,9 @@ bool BlitzMessage::pack(unsigned int data) {
 }
 
 bool BlitzMessage::pack(unsigned int data, short precision) {
+    if (precision > 16) {
+        precision = 16;
+    }
     return this->m_payload->pack(data, precision);
 }
 
@@ -56,6 +68,9 @@ bool BlitzMessage::pack(unsigned long data) {
 }
 
 bool BlitzMessage::pack(unsigned long data, short precision) {
+    if (precision > 32) {
+        precision = 32;
+    }
     return this->m_payload->pack(data, precision);
 }
 
@@ -64,11 +79,14 @@ bool BlitzMessage::pack(long data) {
 }
 
 bool BlitzMessage::pack(long data, short precision) {
+    if (precision > 32) {
+        precision = 32;
+    }
     return this->m_payload->pack((unsigned)data, precision);
 }
 
 /* flag setting functions */
-bool BlitzMessage::set_flag(char flag_id, bool state) {
+bool BlitzMessage::setFlag(char flag_id, bool state) {
     if (flag_id < 1 || flag_id > FLAG_LENGTH) {
         return false;
     }
@@ -88,7 +106,7 @@ bool BlitzMessage::set_flag(char flag_id, bool state) {
 }
 
 /* sending functions */
-char *BlitzMessage::renderInto(char* dest) { 
+void BlitzMessage::renderInto(char* dest) { 
 	
     // build the id 
     char id_str[3];
@@ -138,24 +156,23 @@ char *BlitzMessage::renderInto(char* dest) {
     
     // reset the message for the next round :)
     this->reset();
-    return dest;
 }
 
 /* Utility functions */
 void BlitzMessage::reset() {
     free(this->m_payload);
-    this->reset_flags();
+    this->resetFlags();
     this->m_payload = new blitz_payload();
 }
 
-void BlitzMessage::reset_flags() 
+void BlitzMessage::resetFlags() 
 {
     // initialise flags to "false"
     char flag_mask = 0b11100000;
     this->m_meta &= flag_mask;
 }
 
-bool BlitzMessage::set_type(char type_id) 
+bool BlitzMessage::setType(char type_id) 
 {
     if (type_id > 7 || type_id < 0) {
         // ID must be a char between 0 - 7.  do not set
@@ -174,7 +191,7 @@ BlitzMessage::BlitzMessage(char id)
 {
     this->m_id = id;
     this->m_payload = new blitz_payload();
-    this->m_meta = 0;
+    this->m_meta = 0xA0;
     this->m_timestamp = 0;
     
     this->reset();
