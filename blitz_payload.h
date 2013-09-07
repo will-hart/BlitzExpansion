@@ -2,7 +2,6 @@
 #define BLITZ_PAYLOAD_H
 
 #include "Arduino.h"
-//#include <stdio.h>
 #include <string.h>
 
 #ifdef _SAM3XA_

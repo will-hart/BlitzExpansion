@@ -1,11 +1,11 @@
-#include <BlitzMessage.h>
+#include <BlitzExpansion.h>
 
 BlitzMessage message = BlitzMessage(0x08);
 
 void setup() {
   Serial.begin(9600);  
   
-  message.set_type(BLITZ_DATA);
+  message.setType(BLITZ_DATA);
   
   // set up some input pins
   pinMode(2, INPUT);
