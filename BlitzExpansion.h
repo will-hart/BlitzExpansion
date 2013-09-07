@@ -26,11 +26,11 @@ class BlitzExpansion
         int m_frequencyDelay;
         
         void sendId();
+        void sendStatus();
         void sendLog();
         void handleSerial();
         
     public:
-        void sendStatus();
         BlitzExpansion(char id, int bufferSize, int frequency);
         void begin(void (*)(void), HardwareSerial *serial);
         void sample();
