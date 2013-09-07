@@ -70,7 +70,7 @@ class BlitzMessage
     void renderInto(char *dest);
     
     /* receiving functions */
-    char getType(char *message);
+    static char getType(char *message);
     
     /* utility functions */
     void reset();
