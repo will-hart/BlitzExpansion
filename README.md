@@ -159,6 +159,15 @@ Constructs a new `BlitzMessage`, setting the board ID to the passed `id`.  This 
 
  - **id**: the id (e.g. `0x08`) to use for messages constructed with this `BlitzMessage` instance
 
+#### BlitzMessage::getFlag
+
+    static bool getFlag(char* message, short flagId)
+
+A static function that takes a `BlitzFormattedMessage` or `char[29]` and returns the given flag from the message.  This function takes two arguments:
+
+ - **message**: the message whose flags are to be queried
+ - **flagId**: the number of the flag (1 to 5) to be determined
+ 
 #### BlitzMessage::getType
 
     static char getType(char* message)
@@ -241,11 +250,14 @@ This function is optional.  If it is not called the message will default to type
 
 ### Version 1.1.1
 
- - `+` Add `getType` function 
+ - `+` Add `BlitzMessage::getType` static function
+ - `+` Add `BlitzMessage::getFlag` static function 
+ - `!` Fix incorrect reference to `set_flag` in full expansion board example
 
 ### Version 1.1.0
 
  - `+` Add support for `BlitzExpansion` class to handle all buffering, sending and queueing of messages
+ - `~` Tidy up function naming convention - now uses `setFlag`, `setType`, etc.
 
 ### Version 1.0.1
 

@@ -190,6 +190,16 @@ char BlitzMessage::getType(char *message) {
     return message[1] >> 5;
 }
 
+bool BlitzMessage::getFlag(char *message, short flagId) {
+    if (flagId < 1 || flagId > 5) {
+        return false;
+    } else {
+        char val = message[1] >> (5 - flagId);
+        val &= 0x01;
+        return (bool)val;
+    }    
+}
+
 /* Constructor */
 BlitzMessage::BlitzMessage(char id)
 {
