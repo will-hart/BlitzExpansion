@@ -159,6 +159,14 @@ Constructs a new `BlitzMessage`, setting the board ID to the passed `id`.  This 
 
  - **id**: the id (e.g. `0x08`) to use for messages constructed with this `BlitzMessage` instance
 
+#### BlitzMessage::getType
+
+    static char getType(char* message)
+
+A static function that takes a `BlitzFormattedMessage` or `char[29]` and returns the message type.  This function takes one argument:
+
+ - **message**: the message whose type is to be determined
+
 #### BlitzMessage::pack
 
     bool pack(TYPE data, OPTIONAL SHORT precision);
@@ -230,6 +238,10 @@ Typically messages transmitted from the expansion board to the data logger will 
 This function is optional.  If it is not called the message will default to type `5`. 
 
 ## Change log
+
+### Version 1.1.1
+
+ - `+` Add `getType` function 
 
 ### Version 1.1.0
 
