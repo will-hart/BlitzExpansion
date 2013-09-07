@@ -1,8 +1,7 @@
 /* This version drops I2C support and uses 
 Serial at 57600 instead */
 
-#include "BlitzMessage.h"
-#include "BlitzExpansion.h"
+#include <BlitzExpansion.h>
 
 #define SLAVE_ADDRESS 0x08
 #define BUFFER_SIZE 180

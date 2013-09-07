@@ -1,4 +1,4 @@
-#include <BlitzMessage.h>
+#include <BlitzExpansion.h>
 
 BlitzMessage message = BlitzMessage(0x08);
 
