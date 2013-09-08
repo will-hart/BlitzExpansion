@@ -1,15 +1,12 @@
-# BlitzExpansion 1.1.0
+# BlitzExpansion 1.1.1
 
 ## About
 
-> An Arduino library useful for rapidly prototyping Blitz Expansion Boards.  
-> It provides utilities for sampling to a given frequency, and packing messages
-> in the correct data format using the BlitzMessage class.  This library can be  
-> used as a standard interface for all Arduino derived Blitz Logger Expansion Boards.
+> BlitzExpansion is an Arduino library useful for rapidly prototyping Blitz Expansion Boards.  It provides utilities for sampling to a given frequency, and packing messages in the correct data format using the BlitzMessage class.  This library can be used as a standard interface for all Arduino derived Blitz Logger Expansion Boards.
 
 ## License
 
-This Arduino library is Copyright William Hart (2013) under an LGPLv3 license.  See [www.blitzlogger.com](http://www.blitzlogger.com) for more information. 
+This Arduino library is Copyright William Hart (2013) and released under an LGPLv3 license.  See [www.blitzlogger.com](http://www.blitzlogger.com) for more information.  If you do make any fixes or improvements please contribute a pull request through github so that everybody can benefit.
 
 ## Usage
 
@@ -96,13 +93,15 @@ Several examples are included - either look in the `[Arduino Folder]/libraries/B
 
 ## Speed tests
 
-Running the `Speed_Tests` example in version `1.0.0` I get the following on the Arduino Due:
+The `Speed_Tests.ino` example provides a very rough estimate of message packing speed.  This shows that for version `1.0.0` of `BlitzExpansion` an Arduino Due can generate about 7,500 messages per second.  The output of the `Speed_Tests` file is:
 
  > Generated 10,000 messages in 1.330000013 seconds
 
-On an Arduino Uno R3 I get:
+On an Arduino Uno R3 I get a rate of 1,250 messages per second:
 
  > Generated 10,000 messages in 7.996000289 seconds
+
+
 
 
 ## API
