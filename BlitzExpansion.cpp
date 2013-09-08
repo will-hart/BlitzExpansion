@@ -18,6 +18,9 @@ BlitzExpansion::BlitzExpansion(char id, int bufferSize, int frequency) {
     this->m_maxIdx = bufferSize;
     this->m_frequency = frequency;
     this->m_frequencyDelay = (int)(1000 / frequency);
+    
+    this->m_serialBuffer = "                             \0";
+    this->m_bufferIdx = 0;
 }
 
 /** 
@@ -99,17 +102,32 @@ void BlitzExpansion::log(BlitzFormattedMessage message) {
  * Handles serial communications with the data logger
  */
 void BlitzExpansion::handleSerial() {
-    if (this->m_serial->available() > 0) {
-        char c = this->m_serial->read();
+    while (this->m_serial->available() > 0) {
+        this->m_serialBuffer[this->m_bufferIdx] = this->m_serial->read();
         
-        if (c == BLITZ_COMMS_ID) {
-            this->sendId();
-        } else if (c == BLITZ_COMMS_TRANSMIT) {
-            this->sendLog();
-        } else if (c == BLITZ_COMMS_STATUS) {
-            this->sendStatus();
-        } else {
-            this->m_serial->println(BLITZ_COMMS_ERROR);
+        // we have received a complete message, or run out of buffer
+        if (this->m_serialBuffer[this->m_bufferIdx] == '\n' ||
+            this->m_bufferIdx == 30) {
+            
+            // reset the buffer
+            this->m_bufferIdx = 0;
+            
+            // process the message
+            char msgType = BlitzMessage::getType(this->m_serialBuffer);
+            
+            if (msgType == BLITZ_TRANSMIT) {
+                this->sendLog();
+            } else if (msgType == BLITZ_INSTRUCTION) {
+                if (BlitzMessage::getFlag(this->m_serialBuffer, 1)) {
+                    this->sendId();
+                } else if (BlitzMessage::getFlag(this->m_serialBuffer, 2)) { 
+                    this->sendStatus();
+                } else {
+                    this->m_serial->println("0060\n");
+                }
+            } else {
+                this->m_serial->println("0060\n");
+            }
         }
     }
 }

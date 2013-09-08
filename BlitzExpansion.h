@@ -25,6 +25,9 @@ class BlitzExpansion
         int m_frequency;
         int m_frequencyDelay;
         
+        char* m_serialBuffer;
+        int m_bufferIdx;
+        
         void sendId();
         void sendStatus();
         void sendLog();
