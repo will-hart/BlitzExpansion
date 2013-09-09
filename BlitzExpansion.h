@@ -7,11 +7,6 @@
 #include "Arduino.h"
 #include "HardwareSerial.h"
 
-#define BLITZ_COMMS_ID 'i'
-#define BLITZ_COMMS_TRANSMIT 't'
-#define BLITZ_COMMS_STATUS 's'
-#define BLITZ_COMMS_ERROR 'e'
-
 class BlitzExpansion
 {
     private:
@@ -31,8 +26,10 @@ class BlitzExpansion
         void sendId();
         void sendStatus();
         void sendLog();
+        void clearSerialBuffer();
         void handleSerial();
-        
+
+
     public:
         BlitzExpansion(char id, int bufferSize, int frequency);
         void begin(void (*)(void), HardwareSerial *serial);

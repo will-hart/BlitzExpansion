@@ -186,8 +186,19 @@ bool BlitzMessage::setType(char type_id)
     this->m_meta |= type_mask;
 }
 
-char BlitzMessage::getType(char *message) {
-    return message[1] >> 5;
+unsigned short BlitzMessage::getType(char *message) {
+    unsigned char first = toupper(message[2]);
+    unsigned char second = toupper(message[3]);
+    
+    // convert to numbers 
+    if (first >= 58) {
+        first -= 56;
+    } else { 
+        first -= 48
+    }
+    
+    unsigned short meta = (fisrt << 8) | second;
+    return (meta >> 5) | 0b111;
 }
 
 bool BlitzMessage::getFlag(char *message, short flagId) {

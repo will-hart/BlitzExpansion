@@ -70,11 +70,14 @@ class BlitzMessage
     void renderInto(char *dest);
     
     /* receiving functions */
-    static char getType(char *message);
+    static unsigned short getType(char *message);
     static bool getFlag(char *message, short flagId);
     
     /* utility functions */
     void reset();
+    
+    /* static constants */
+    static const int MESSAGE_LENGTH = 28;
     
 };
 

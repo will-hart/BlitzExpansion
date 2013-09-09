@@ -19,7 +19,9 @@ BlitzExpansion::BlitzExpansion(char id, int bufferSize, int frequency) {
     this->m_frequency = frequency;
     this->m_frequencyDelay = (int)(1000 / frequency);
     
-    this->m_serialBuffer = "                             \0";
+    this->m_serialBuffer = new char[BlitzMessage::MESSAGE_LENGTH];
+    this->clearSerialBuffer();
+    
     this->m_bufferIdx = 0;
 }
 
@@ -98,37 +100,68 @@ void BlitzExpansion::log(BlitzFormattedMessage message) {
     }
 }
 
+
+/** 
+ * Clears the serial buffer
+ */
+void BlitzExpansion::clearSerialBuffer() {
+    for (int i = 0; i < BlitzMessage::MESSAGE_LENGTH; ++i) {
+        this->m_serialBuffer[i] = 0;
+    }
+    this->m_serialBuffer[BlitzMessage::MESSAGE_LENGTH] = '\0';
+}
+
+
 /**
  * Handles serial communications with the data logger
  */
 void BlitzExpansion::handleSerial() {
-    while (this->m_serial->available() > 0) {
+    while (this->m_serial->available() > 0) {        
         this->m_serialBuffer[this->m_bufferIdx] = this->m_serial->read();
+        ++this->m_bufferIdx;
         
         // we have received a complete message, or run out of buffer
-        if (this->m_serialBuffer[this->m_bufferIdx] == '\n' ||
-            this->m_bufferIdx == 30) {
+        if (this->m_serialBuffer[this->m_bufferIdx - 1] == '\n' ||
+            this->m_bufferIdx >= BlitzMessage::MESSAGE_LENGTH) {
             
             // reset the buffer
             this->m_bufferIdx = 0;
             
-            // process the message
-            char msgType = BlitzMessage::getType(this->m_serialBuffer);
+            this->m_serial->println("_______________________________________");
+            unsigned short meta = (this->m_serialBuffer[2] << 8) | this->m_serialBuffer[3];
+            this->m_serial->println(meta);
+            this->m_serial->println((meta >> 5) | 0b111);
+            this->m_serial->println("_______________________________________");
             
-            if (msgType == BLITZ_TRANSMIT) {
+            // process the message
+            short msgType = BlitzMessage::getType(this->m_serialBuffer);
+            this->m_serial->print("MSG: ");
+            this->m_serial->println(this->m_serialBuffer);
+            this->m_serial->print("TYPE: ");
+            this->m_serial->println((int)msgType);
+            this->m_serial->print("RESPONSE: ");
+            
+            if (msgType == BLITZ_TRANSMIT) { 
+                this->m_serial->println("TX");
                 this->sendLog();
             } else if (msgType == BLITZ_INSTRUCTION) {
                 if (BlitzMessage::getFlag(this->m_serialBuffer, 1)) {
+                    this->m_serial->println("ID");
                     this->sendId();
                 } else if (BlitzMessage::getFlag(this->m_serialBuffer, 2)) { 
+                    this->m_serial->println("ST");
                     this->sendStatus();
                 } else {
+                    this->m_serial->println("ER");
                     this->m_serial->println("0060\n");
                 }
             } else {
                 this->m_serial->println("0060\n");
             }
+            
+            this->clearSerialBuffer();
         }
+        
     }
 }
 
