@@ -35,6 +35,7 @@ BlitzExpansion::BlitzExpansion(char id, int bufferSize, int frequency) {
 void BlitzExpansion::begin(void (*function)(void), HardwareSerial *serial)
 {
   this->m_onSample = function;
+  this->m_onInstruction = NULL;
   this->m_serial = serial;
 }
 
@@ -44,10 +45,11 @@ void BlitzExpansion::begin(void (*function)(void), HardwareSerial *serial)
  * the BlitzExpansion->builder to create a BlitzFormattedMessage
  * and then save this message to the buffer using 
  * BlitzExpansion::log()
- 
+ */
 void BlitzExpansion::begin(void (*sample)(void), bool (*instruction)(int, char*), HardwareSerial *serial)
 {
-  this->m_onSample = function;
+  this->m_onSample = sample;
+  this->m_onInstruction = instruction;
   this->m_serial = serial;
 }
 
@@ -152,8 +154,14 @@ void BlitzExpansion::handleSerial() {
                 } else if (instruction == BLITZ_INSTRUCTION_STATUS) {
                     this->sendStatus();
                 } else {
-                    // unknown instruction error
-                    this->sendShortResponse(BLITZ_ERROR_UNKNOWN_INSTRUCTION);
+                    bool handled = false;
+                    if (this->m_onInstruction != NULL) {
+                        handled = this->m_onInstruction(instruction, this->m_serialBuffer);
+                    }
+                    if (!handled) {
+                        // unknown instruction error
+                        this->sendShortResponse(BLITZ_ERROR_UNKNOWN_INSTRUCTION);
+                    }
                 }
             } else {
                 // unknown message error

@@ -12,6 +12,7 @@ class BlitzExpansion
     private:
         HardwareSerial* m_serial;
         void (*m_onSample)(void);
+        bool (*m_onInstruction)(int, char*);
         char m_id;
         char** m_messageBuffer;
         int m_currentIdx;
@@ -35,9 +36,12 @@ class BlitzExpansion
 
     public:
         BlitzExpansion(char id, int bufferSize, int frequency);
+        
         void begin(void (*)(void), HardwareSerial *serial);
+        void begin(void (*)(void), bool (*)(int, char*), HardwareSerial *serial);
+        
         void sample();
         void log(BlitzFormattedMessage message);
-        
+
 };
 #endif*/
