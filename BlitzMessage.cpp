@@ -185,12 +185,16 @@ bool BlitzMessage::setType(char type_id)
     this->m_meta |= type_mask;
 }
 
-short BlitzMessage::getType(char *message) {
+char BlitzMessage::getType(char *message) {
     char first = BlitzMessage::asHex(message[2]) << 4;
     first |= BlitzMessage::asHex(message[3]);
     return first >> 5;
 }
 
+char BlitzMessage::getInstruction(char *message) {
+    char first = (BlitzMessage::asHex(message[2]) & 0b0001) << 4 ;
+    return first | BlitzMessage::asHex(message[3]);
+}
 
 bool BlitzMessage::getFlag(char *message, short flagId) {
     if (flagId < 1 || flagId > 5) {

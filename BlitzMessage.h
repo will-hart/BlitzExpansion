@@ -72,7 +72,8 @@ class BlitzMessage
         void renderInto(char *dest);
         
         /* receiving functions */
-        static short getType(char *message);
+        static char getType(char *message);
+        static char getInstruction(char *message);
         static bool getFlag(char *message, short flagId);
         static char asHex(char c);
         

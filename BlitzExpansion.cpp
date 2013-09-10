@@ -139,10 +139,10 @@ void BlitzExpansion::handleSerial() {
                 } else if (BlitzMessage::getFlag(this->m_serialBuffer, 2)) {
                     this->sendStatus();
                 } else {
-                    this->m_serial->println("0060");
+                    this->m_serial->println("009F");
                 }
             } else {
-                this->m_serial->println("0060");
+                this->m_serial->println("00D0");
             }
             
             this->clearSerialBuffer();
@@ -158,7 +158,7 @@ void BlitzExpansion::handleSerial() {
  */
 void BlitzExpansion::sendId() {
     char *buffer = new char[7];
-    sprintf(buffer, "ID %-3i", this->m_id);
+    sprintf(buffer, "%02x91", this->m_id);
     this->m_serial->println(buffer);
 }
 
@@ -183,7 +183,5 @@ void BlitzExpansion::sendLog() {
  * last sent buffer position
  */
 void BlitzExpansion::sendStatus() {
-    this->m_serial->print(this->m_currentIdx);
-    this->m_serial->print(" ");
-    this->m_serial->println(this->m_sendIdx);
+    this->m_serial->println("00C8");
 }
