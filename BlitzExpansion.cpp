@@ -120,16 +120,14 @@ void BlitzExpansion::handleSerial() {
         this->m_serialBuffer[this->m_bufferIdx] = this->m_serial->read();
         ++this->m_bufferIdx;
         
-        // we have received a complete message, or run out of buffer
-        if (this->m_serialBuffer[this->m_bufferIdx - 1] == '\n' ||
-            this->m_bufferIdx >= BlitzMessage::MESSAGE_LENGTH) {
-            
-            if (this->m_bufferIdx == 1) { 
-                // we have found an extra newline after a message
+        // we have received a complete message
+        if (this->m_serialBuffer[this->m_bufferIdx - 1] == '\n') {
+            if (this->m_bufferIdx < 4) {
+                // message too short
                 this->clearSerialBuffer();
-                return;
+                this->sendShortResponse("C2");
             }
-            
+        
             short msgType = BlitzMessage::getType(this->m_serialBuffer);
             if (msgType == BLITZ_TRANSMIT) {
                 this->sendLog();
@@ -139,13 +137,17 @@ void BlitzExpansion::handleSerial() {
                 } else if (BlitzMessage::getFlag(this->m_serialBuffer, 2)) {
                     this->sendStatus();
                 } else {
-                    this->m_serial->println("009F");
+                    this->sendShortResponse("9F");
                 }
             } else {
-                this->m_serial->println("00D0");
+                this->sendShortResponse("D0");
             }
             
             this->clearSerialBuffer();
+        } else if (this->m_bufferIdx >= BlitzMessage::MESSAGE_LENGTH) {
+            // we have run out of buffer.  This is an error
+            this->clearSerialBuffer();
+            this->sendShortResponse("C4");
         }
         
     }
@@ -157,8 +159,19 @@ void BlitzExpansion::handleSerial() {
  * padded by spaces until it is length 3.
  */
 void BlitzExpansion::sendId() {
-    char *buffer = new char[7];
-    sprintf(buffer, "%02x91", this->m_id);
+    this->sendShortResponse("91");
+}
+
+/**
+ * Send a response over serial with the board ID then the two digit code.
+ * Formats should be a two digit hex response code along the lines of "91"
+ */
+void BlitzExpansion::sendShortResponse(char *code) {
+    char format[7];
+    char buffer[5];
+    strcpy(format, "%02x");
+    strcat(format, code);
+    sprintf(buffer, format, this->m_id);
     this->m_serial->println(buffer);
 }
 

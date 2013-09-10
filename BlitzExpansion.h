@@ -26,8 +26,11 @@ class BlitzExpansion
         void sendId();
         void sendStatus();
         void sendLog();
+        void sendShortResponse(char *code);
+        
         void clearSerialBuffer();
         void handleSerial();
+        
 
 
     public:
