@@ -54,7 +54,6 @@ class BlitzMessage
         
         /* utility functions */
         void resetFlags();
-
         
     public:
         BlitzMessage(char id);
@@ -87,6 +86,7 @@ class BlitzMessage
         static char getType(char *message);
         static char getInstruction(char *message);
         static bool getFlag(char *message, short flagId);
+        static blitz_u16 buildU16(char *message, char index);
         static char asHex(char c);
         
         /* utility functions */

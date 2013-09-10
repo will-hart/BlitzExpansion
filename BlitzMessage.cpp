@@ -223,6 +223,16 @@ char BlitzMessage::asHex(char c) {
     }
 }
 
+blitz_u16 BlitzMessage::buildU16(char *message, char index) {
+    unsigned short result = 0;
+    for (int i = index; i < index + 4; ++i) {
+        result <<= 4;
+        result |= BlitzMessage::asHex(message[i]);
+    }
+    
+    return result;
+}
+
 /* Constructor */
 BlitzMessage::BlitzMessage(char id)
 {

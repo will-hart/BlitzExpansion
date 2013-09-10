@@ -46,7 +46,7 @@ void BlitzExpansion::begin(void (*function)(void), HardwareSerial *serial)
  * and then save this message to the buffer using 
  * BlitzExpansion::log()
  */
-void BlitzExpansion::begin(void (*sample)(void), bool (*instruction)(int, char*), HardwareSerial *serial)
+void BlitzExpansion::begin(void (*sample)(void), bool (*instruction)(blitz_u8, blitz_u16*), HardwareSerial *serial)
 {
   this->m_onSample = sample;
   this->m_onInstruction = instruction;
@@ -156,7 +156,18 @@ void BlitzExpansion::handleSerial() {
                 } else {
                     bool handled = false;
                     if (this->m_onInstruction != NULL) {
-                        handled = this->m_onInstruction(instruction, this->m_serialBuffer);
+                        
+                        // pass off to user defined instruction handler
+                        unsigned short payload[4] = { 0, 0, 0, 0 };
+                        
+                        if (this->m_bufferIdx >= BlitzMessage::MESSAGE_LENGTH) {
+                            payload[0] = BlitzMessage::buildU16(this->m_serialBuffer, 12);
+                            payload[1] = BlitzMessage::buildU16(this->m_serialBuffer, 16);
+                            payload[2] = BlitzMessage::buildU16(this->m_serialBuffer, 20);
+                            payload[3] = BlitzMessage::buildU16(this->m_serialBuffer, 24);
+                        }
+                        
+                        handled = this->m_onInstruction(instruction, payload);
                     }
                     if (!handled) {
                         // unknown instruction error
