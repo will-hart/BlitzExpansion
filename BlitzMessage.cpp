@@ -10,7 +10,6 @@
 #include "BlitzMessage.h"
 
 #include "Arduino.h"
-//#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -186,20 +185,12 @@ bool BlitzMessage::setType(char type_id)
     this->m_meta |= type_mask;
 }
 
-unsigned short BlitzMessage::getType(char *message) {
-    unsigned char first = toupper(message[2]);
-    unsigned char second = toupper(message[3]);
-    
-    // convert to numbers 
-    if (first >= 58) {
-        first -= 56;
-    } else { 
-        first -= 48
-    }
-    
-    unsigned short meta = (fisrt << 8) | second;
-    return (meta >> 5) | 0b111;
+short BlitzMessage::getType(char *message) {
+    char first = BlitzMessage::asHex(message[2]) << 4;
+    first |= BlitzMessage::asHex(message[3]);
+    return first >> 5;
 }
+
 
 bool BlitzMessage::getFlag(char *message, short flagId) {
     if (flagId < 1 || flagId > 5) {
@@ -209,6 +200,23 @@ bool BlitzMessage::getFlag(char *message, short flagId) {
         val &= 0x01;
         return (bool)val;
     }    
+}
+
+
+/**
+ * Converts an ascii value to HEX
+ */
+char BlitzMessage::asHex(char c) {
+    
+    if (c >= '0' && c <= '9') {
+        return c - '0';
+    } else if (c >= 'A' && c <= 'F') {
+        return c - 'A' + 10;
+    } else if (c >= 'a' && c <= 'f') {
+        return c - 'a' + 10;
+    } else {
+        return 0;
+    }
 }
 
 /* Constructor */

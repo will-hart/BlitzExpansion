@@ -31,6 +31,7 @@
 #define BLITZ_TRANSMIT 6
 #define BLITZ_EXTENDED 7
 
+
 class BlitzMessage
 {
     private:
@@ -41,43 +42,45 @@ class BlitzMessage
         
         /* utility functions */
         void resetFlags();
+
         
     public:
         BlitzMessage(char id);
     
-    bool setType(char type_id);
-    
-    /* packing functions */
-    bool pack(bool data);
-    bool pack(unsigned char data, short precision);
-    bool pack(unsigned char data);
-    bool pack(char data, short precision);
-    bool pack(char data);
-    bool pack(unsigned int data, short precision);
-    bool pack(unsigned int data);
-    bool pack(int data, short precision);
-    bool pack(int data);
-    bool pack(unsigned long data, short precision);
-    bool pack(unsigned long data);
-    bool pack(long data, short precision);
-    bool pack(long data);
-    
-    
-    /* flag setting functions */
-    bool setFlag(char flag_id, bool state);
-    
-    /* sending functions */
-    void renderInto(char *dest);
-    
-    /* receiving functions */
-    static unsigned short getType(char *message);
-    static bool getFlag(char *message, short flagId);
-    
-    /* utility functions */
-    void reset();
-    
-    /* static constants */
-    static const int MESSAGE_LENGTH = 28;
+        bool setType(char type_id);
+        
+        /* packing functions */
+        bool pack(bool data);
+        bool pack(unsigned char data, short precision);
+        bool pack(unsigned char data);
+        bool pack(char data, short precision);
+        bool pack(char data);
+        bool pack(unsigned int data, short precision);
+        bool pack(unsigned int data);
+        bool pack(int data, short precision);
+        bool pack(int data);
+        bool pack(unsigned long data, short precision);
+        bool pack(unsigned long data);
+        bool pack(long data, short precision);
+        bool pack(long data);
+        
+        
+        /* flag setting functions */
+        bool setFlag(char flag_id, bool state);
+        
+        /* sending functions */
+        void renderInto(char *dest);
+        
+        /* receiving functions */
+        static short getType(char *message);
+        static bool getFlag(char *message, short flagId);
+        static char asHex(char c);
+        
+        /* utility functions */
+        void reset();
+        
+        /* static constants */
+        static const int MESSAGE_LENGTH = 28;
     
 };
 

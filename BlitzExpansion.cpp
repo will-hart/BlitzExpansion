@@ -105,10 +105,10 @@ void BlitzExpansion::log(BlitzFormattedMessage message) {
  * Clears the serial buffer
  */
 void BlitzExpansion::clearSerialBuffer() {
+    this->m_bufferIdx = 0;
     for (int i = 0; i < BlitzMessage::MESSAGE_LENGTH; ++i) {
         this->m_serialBuffer[i] = 0;
     }
-    this->m_serialBuffer[BlitzMessage::MESSAGE_LENGTH] = '\0';
 }
 
 
@@ -124,39 +124,25 @@ void BlitzExpansion::handleSerial() {
         if (this->m_serialBuffer[this->m_bufferIdx - 1] == '\n' ||
             this->m_bufferIdx >= BlitzMessage::MESSAGE_LENGTH) {
             
-            // reset the buffer
-            this->m_bufferIdx = 0;
+            if (this->m_bufferIdx == 1) { 
+                // we have found an extra newline after a message
+                this->clearSerialBuffer();
+                return;
+            }
             
-            this->m_serial->println("_______________________________________");
-            unsigned short meta = (this->m_serialBuffer[2] << 8) | this->m_serialBuffer[3];
-            this->m_serial->println(meta);
-            this->m_serial->println((meta >> 5) | 0b111);
-            this->m_serial->println("_______________________________________");
-            
-            // process the message
             short msgType = BlitzMessage::getType(this->m_serialBuffer);
-            this->m_serial->print("MSG: ");
-            this->m_serial->println(this->m_serialBuffer);
-            this->m_serial->print("TYPE: ");
-            this->m_serial->println((int)msgType);
-            this->m_serial->print("RESPONSE: ");
-            
-            if (msgType == BLITZ_TRANSMIT) { 
-                this->m_serial->println("TX");
+            if (msgType == BLITZ_TRANSMIT) {
                 this->sendLog();
             } else if (msgType == BLITZ_INSTRUCTION) {
                 if (BlitzMessage::getFlag(this->m_serialBuffer, 1)) {
-                    this->m_serial->println("ID");
                     this->sendId();
-                } else if (BlitzMessage::getFlag(this->m_serialBuffer, 2)) { 
-                    this->m_serial->println("ST");
+                } else if (BlitzMessage::getFlag(this->m_serialBuffer, 2)) {
                     this->sendStatus();
                 } else {
-                    this->m_serial->println("ER");
-                    this->m_serial->println("0060\n");
+                    this->m_serial->println("0060");
                 }
             } else {
-                this->m_serial->println("0060\n");
+                this->m_serial->println("0060");
             }
             
             this->clearSerialBuffer();
