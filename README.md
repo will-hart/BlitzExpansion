@@ -1,4 +1,4 @@
-# BlitzExpansion 1.1.1
+# BlitzExpansion 1.2.0
 
 ## About
 
@@ -246,6 +246,15 @@ Typically messages transmitted from the expansion board to the data logger will 
 This function is optional.  If it is not called the message will default to type `5`. 
 
 ## Change log
+
+### Version 1.2.0
+
+In this version `BlitzExpansion` was updated to allow it to respond to instructions sent from the data logger.  Custom instructions can also be handled through an Arduino function.
+
+ - `+` add ability for a custom instruction handler
+ - `~` rebuild serial message receipt and handling
+ - `~` improve response handling and error codes
+ - `!` fix issue with incorrect nibble length in `getType`
 
 ### Version 1.1.1
 
