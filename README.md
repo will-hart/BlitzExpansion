@@ -1,3 +1,4 @@
+
 # BlitzExpansion 1.1.1
 
 ## About
@@ -106,6 +107,20 @@ On an Arduino Uno R3 I get a rate of 1,250 messages per second:
 
 ## API
 
+### Types
+
+    blitz_u8
+
+An 8 bit unsigned number - equivalent to `unsigned char`
+
+    blitz_u16
+
+A 16 bit unsigned number - equivalent to `unsigned short`
+
+    blitz_u32
+
+A 32 bit unsigned number equivalent to `unsigned long` for most Atmel Arduino's, or `unsigned int` on the Arduino Due.
+
 ### BlitzExpansion
 
 #### Constructor (BlitzExpansion::BlitzExpansion)
@@ -118,15 +133,26 @@ Constructs a new instance of a BlitzExpansion board that can be used to carry ou
  - **bufferSize**: the number of `BlitzFormattedMessages` to store (in a circular buffer)
  - **frequency**: the (integer) frequency to sample at
        
-#### BlitzExpansion::begin() 
+#### BlitzExpansion::begin() (two overloads) 
 
-    void begin(void (function)(void), HardwareSerial *serial);
+    void begin(void (*function)(void), HardwareSerial *serial);
         
 Configures the `BlitzExpansion` instance for logging and communicating using the given sampling function and reference to the serial class. The two arguments are:
 
  - **function**: a function to use to sample and log messages.  This function should call `BlitzExpansion::log` with a formatted message.
  - **serial**: a reference to the serial adapter being used for communications - usually obtained by `&Serial`
 
+The passed **function** should have the signature: `void myFunction()`
+
+    void begin(void (*sample)(void), bool (*instruction)(blitz_u8, blitz_u16*), HardwareSerial *serial);
+
+Configures the `BlitzExpansion` as for the `begin()` version above and additionally provides a function for handling instructions received from the data logger. This function should have the signature `bool myHandler (unsigned char id, unsigned short* payload)`
+
+This overloaded function has three arguments: 
+
+ - **sample**: as per `function` in the previous `begin` description
+ - **instruction**: a function for parsing custom board instructions, receives the ID and the message payload broken into four 16 bit `blitz_u16` array elements.
+ - **serial**: a reference to the serial adapter being used for communications - usually obtained by `&Serial`
 
 #### BlitzExpansion::log()
 
@@ -158,6 +184,24 @@ Constructs a new `BlitzMessage`, setting the board ID to the passed `id`.  This 
 
  - **id**: the id (e.g. `0x08`) to use for messages constructed with this `BlitzMessage` instance
 
+#### BlitzMessage::asHex
+
+    static char asHex(char c);
+
+A static function that takes an ASCII character and returns the integer (e.g. `asHex('A')` will return `10`)
+
+ - **c**: the character to parse into its equivalent hex value
+
+
+#### BlitzMessage::buildU16
+
+    static blitz_u16 buildU16(char *message, char index)
+
+A static function that takes a `BlitzFormattedMessage` or `char[29]` and a starting index and builds a 16 bit number:
+
+ - **message**: the message to be parsed
+ - **index**: the start index to take 16 bits from
+
 #### BlitzMessage::getFlag
 
     static bool getFlag(char* message, short flagId)
@@ -166,6 +210,14 @@ A static function that takes a `BlitzFormattedMessage` or `char[29]` and returns
 
  - **message**: the message whose flags are to be queried
  - **flagId**: the number of the flag (1 to 5) to be determined
+
+#### BlitzMessage::getInstruction
+
+    static char getFlag(char* message)
+
+A static function that takes a `BlitzFormattedMessage` or `char[29]` and returns the instruction ID:
+
+ - **message**: the message whose instruction is to be determined 
  
 #### BlitzMessage::getType
 
