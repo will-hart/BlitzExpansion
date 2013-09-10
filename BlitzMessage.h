@@ -31,6 +31,18 @@
 #define BLITZ_TRANSMIT 6
 #define BLITZ_EXTENDED 7
 
+#define BLITZ_INSTRUCTION_NONE 0
+#define BLITZ_INSTRUCTION_ID 1
+#define BLITZ_INSTRUCTION_STATUS 3
+
+#define BLITZ_ERROR_MESSAGE_TOO_SHORT "61"
+#define BLITZ_ERROR_SERIAL_BUFFER_FULL "62"
+#define BLITZ_ERROR_NOT_IMPLEMENTED "63"
+#define BLITZ_ERROR_UNKNOWN_MESSAGE "64"
+#define BLITZ_ERROR_UNKNOWN_INSTRUCTION "65"
+
+#define BLITZ_RESPONSE_ID "82"
+#define BLITZ_RESPONSE_STATUS "84"
 
 class BlitzMessage
 {
@@ -42,7 +54,6 @@ class BlitzMessage
         
         /* utility functions */
         void resetFlags();
-
         
     public:
         BlitzMessage(char id);
@@ -75,6 +86,7 @@ class BlitzMessage
         static char getType(char *message);
         static char getInstruction(char *message);
         static bool getFlag(char *message, short flagId);
+        static blitz_u16 buildU16(char *message, char index);
         static char asHex(char c);
         
         /* utility functions */
