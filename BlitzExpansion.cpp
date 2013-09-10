@@ -38,6 +38,19 @@ void BlitzExpansion::begin(void (*function)(void), HardwareSerial *serial)
   this->m_serial = serial;
 }
 
+/** 
+ * The function (specified by the user) that determines
+ * what happens when a sample is taken.  This should use
+ * the BlitzExpansion->builder to create a BlitzFormattedMessage
+ * and then save this message to the buffer using 
+ * BlitzExpansion::log()
+ 
+void BlitzExpansion::begin(void (*sample)(void), void (*instruction)(int, char*), HardwareSerial *serial)
+{
+  this->m_onSample = function;
+  this->m_serial = serial;
+}*/
+
 /**
  * A blocking function which takes a sample (using the function 
  * defined by BlitzExpansion::onSample) and then delays for the
@@ -133,7 +146,7 @@ void BlitzExpansion::handleSerial() {
                 this->sendLog();
             } else if (msgType == BLITZ_INSTRUCTION) {
                 if (BlitzMessage::getFlag(this->m_serialBuffer, 1)) {
-                    this->sendId();
+                    this->sendShortResponse("91");
                 } else if (BlitzMessage::getFlag(this->m_serialBuffer, 2)) {
                     this->sendStatus();
                 } else {
@@ -145,21 +158,11 @@ void BlitzExpansion::handleSerial() {
             
             this->clearSerialBuffer();
         } else if (this->m_bufferIdx >= BlitzMessage::MESSAGE_LENGTH) {
-            // we have run out of buffer.  This is an error
+            // we have run out of buffer.  This is an error!
             this->clearSerialBuffer();
             this->sendShortResponse("C4");
-        }
-        
+        }  
     }
-}
-
-/** 
- * Responds to an ID request from the data logger with a 
- * message in the format:  "ID  25".  Note the ID is left 
- * padded by spaces until it is length 3.
- */
-void BlitzExpansion::sendId() {
-    this->sendShortResponse("91");
 }
 
 /**
