@@ -10,7 +10,6 @@
 #include "BlitzMessage.h"
 
 #include "Arduino.h"
-//#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -187,7 +186,14 @@ bool BlitzMessage::setType(char type_id)
 }
 
 char BlitzMessage::getType(char *message) {
-    return message[1] >> 5;
+    char first = BlitzMessage::asHex(message[2]) << 4;
+    first |= BlitzMessage::asHex(message[3]);
+    return first >> 5;
+}
+
+char BlitzMessage::getInstruction(char *message) {
+    char first = (BlitzMessage::asHex(message[2]) & 0b0001) << 4 ;
+    return first | BlitzMessage::asHex(message[3]);
 }
 
 bool BlitzMessage::getFlag(char *message, short flagId) {
@@ -198,6 +204,23 @@ bool BlitzMessage::getFlag(char *message, short flagId) {
         val &= 0x01;
         return (bool)val;
     }    
+}
+
+
+/**
+ * Converts an ascii value to HEX
+ */
+char BlitzMessage::asHex(char c) {
+    
+    if (c >= '0' && c <= '9') {
+        return c - '0';
+    } else if (c >= 'A' && c <= 'F') {
+        return c - 'A' + 10;
+    } else if (c >= 'a' && c <= 'f') {
+        return c - 'a' + 10;
+    } else {
+        return 0;
+    }
 }
 
 /* Constructor */

@@ -18,6 +18,11 @@ BlitzExpansion::BlitzExpansion(char id, int bufferSize, int frequency) {
     this->m_maxIdx = bufferSize;
     this->m_frequency = frequency;
     this->m_frequencyDelay = (int)(1000 / frequency);
+    
+    this->m_serialBuffer = new char[BlitzMessage::MESSAGE_LENGTH];
+    this->clearSerialBuffer();
+    
+    this->m_bufferIdx = 0;
 }
 
 /** 
@@ -32,6 +37,19 @@ void BlitzExpansion::begin(void (*function)(void), HardwareSerial *serial)
   this->m_onSample = function;
   this->m_serial = serial;
 }
+
+/** 
+ * The function (specified by the user) that determines
+ * what happens when a sample is taken.  This should use
+ * the BlitzExpansion->builder to create a BlitzFormattedMessage
+ * and then save this message to the buffer using 
+ * BlitzExpansion::log()
+ 
+void BlitzExpansion::begin(void (*sample)(void), void (*instruction)(int, char*), HardwareSerial *serial)
+{
+  this->m_onSample = function;
+  this->m_serial = serial;
+}*/
 
 /**
  * A blocking function which takes a sample (using the function 
@@ -95,33 +113,68 @@ void BlitzExpansion::log(BlitzFormattedMessage message) {
     }
 }
 
+
+/** 
+ * Clears the serial buffer
+ */
+void BlitzExpansion::clearSerialBuffer() {
+    this->m_bufferIdx = 0;
+    for (int i = 0; i < BlitzMessage::MESSAGE_LENGTH; ++i) {
+        this->m_serialBuffer[i] = 0;
+    }
+}
+
+
 /**
  * Handles serial communications with the data logger
  */
 void BlitzExpansion::handleSerial() {
-    if (this->m_serial->available() > 0) {
-        char c = this->m_serial->read();
+    while (this->m_serial->available() > 0) {        
+        this->m_serialBuffer[this->m_bufferIdx] = this->m_serial->read();
+        ++this->m_bufferIdx;
         
-        if (c == BLITZ_COMMS_ID) {
-            this->sendId();
-        } else if (c == BLITZ_COMMS_TRANSMIT) {
-            this->sendLog();
-        } else if (c == BLITZ_COMMS_STATUS) {
-            this->sendStatus();
-        } else {
-            this->m_serial->println(BLITZ_COMMS_ERROR);
-        }
+        // we have received a complete message
+        if (this->m_serialBuffer[this->m_bufferIdx - 1] == '\n') {
+            if (this->m_bufferIdx < 4) {
+                // message too short
+                this->clearSerialBuffer();
+                this->sendShortResponse("C2");
+            }
+        
+            short msgType = BlitzMessage::getType(this->m_serialBuffer);
+            if (msgType == BLITZ_TRANSMIT) {
+                this->sendLog();
+            } else if (msgType == BLITZ_INSTRUCTION) {
+                if (BlitzMessage::getFlag(this->m_serialBuffer, 1)) {
+                    this->sendShortResponse("91");
+                } else if (BlitzMessage::getFlag(this->m_serialBuffer, 2)) {
+                    this->sendStatus();
+                } else {
+                    this->sendShortResponse("9F");
+                }
+            } else {
+                this->sendShortResponse("D0");
+            }
+            
+            this->clearSerialBuffer();
+        } else if (this->m_bufferIdx >= BlitzMessage::MESSAGE_LENGTH) {
+            // we have run out of buffer.  This is an error!
+            this->clearSerialBuffer();
+            this->sendShortResponse("C4");
+        }  
     }
 }
 
-/** 
- * Responds to an ID request from the data logger with a 
- * message in the format:  "ID  25".  Note the ID is left 
- * padded by spaces until it is length 3.
+/**
+ * Send a response over serial with the board ID then the two digit code.
+ * Formats should be a two digit hex response code along the lines of "91"
  */
-void BlitzExpansion::sendId() {
-    char *buffer = new char[7];
-    sprintf(buffer, "ID %-3i", this->m_id);
+void BlitzExpansion::sendShortResponse(char *code) {
+    char format[7];
+    char buffer[5];
+    strcpy(format, "%02x");
+    strcat(format, code);
+    sprintf(buffer, format, this->m_id);
     this->m_serial->println(buffer);
 }
 
@@ -146,7 +199,5 @@ void BlitzExpansion::sendLog() {
  * last sent buffer position
  */
 void BlitzExpansion::sendStatus() {
-    this->m_serial->print(this->m_currentIdx);
-    this->m_serial->print(" ");
-    this->m_serial->println(this->m_sendIdx);
+    this->m_serial->println("00C8");
 }
