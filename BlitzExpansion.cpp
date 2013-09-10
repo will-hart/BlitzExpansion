@@ -45,11 +45,11 @@ void BlitzExpansion::begin(void (*function)(void), HardwareSerial *serial)
  * and then save this message to the buffer using 
  * BlitzExpansion::log()
  
-void BlitzExpansion::begin(void (*sample)(void), void (*instruction)(int, char*), HardwareSerial *serial)
+void BlitzExpansion::begin(void (*sample)(void), bool (*instruction)(int, char*), HardwareSerial *serial)
 {
   this->m_onSample = function;
   this->m_serial = serial;
-}*/
+}
 
 /**
  * A blocking function which takes a sample (using the function 
@@ -136,31 +136,35 @@ void BlitzExpansion::handleSerial() {
         // we have received a complete message
         if (this->m_serialBuffer[this->m_bufferIdx - 1] == '\n') {
             if (this->m_bufferIdx < 4) {
-                // message too short
+                // message too short error
                 this->clearSerialBuffer();
-                this->sendShortResponse("C2");
+                this->sendShortResponse(BLITZ_ERROR_MESSAGE_TOO_SHORT);
             }
         
             short msgType = BlitzMessage::getType(this->m_serialBuffer);
             if (msgType == BLITZ_TRANSMIT) {
                 this->sendLog();
             } else if (msgType == BLITZ_INSTRUCTION) {
-                if (BlitzMessage::getFlag(this->m_serialBuffer, 1)) {
-                    this->sendShortResponse("91");
-                } else if (BlitzMessage::getFlag(this->m_serialBuffer, 2)) {
+                char instruction = BlitzMessage::getInstruction(this->m_serialBuffer);
+                
+                if (instruction == BLITZ_INSTRUCTION_ID) {
+                    this->sendShortResponse(BLITZ_RESPONSE_ID);
+                } else if (instruction == BLITZ_INSTRUCTION_STATUS) {
                     this->sendStatus();
                 } else {
-                    this->sendShortResponse("9F");
+                    // unknown instruction error
+                    this->sendShortResponse(BLITZ_ERROR_UNKNOWN_INSTRUCTION);
                 }
             } else {
-                this->sendShortResponse("D0");
+                // unknown message error
+                this->sendShortResponse(BLITZ_ERROR_UNKNOWN_MESSAGE);
             }
             
             this->clearSerialBuffer();
         } else if (this->m_bufferIdx >= BlitzMessage::MESSAGE_LENGTH) {
-            // we have run out of buffer.  This is an error!
+            // message too long error
             this->clearSerialBuffer();
-            this->sendShortResponse("C4");
+            this->sendShortResponse(BLITZ_ERROR_SERIAL_BUFFER_FULL);
         }  
     }
 }
@@ -199,5 +203,5 @@ void BlitzExpansion::sendLog() {
  * last sent buffer position
  */
 void BlitzExpansion::sendStatus() {
-    this->m_serial->println("00C8");
+    this->sendShortResponse(BLITZ_ERROR_NOT_IMPLEMENTED);
 }
