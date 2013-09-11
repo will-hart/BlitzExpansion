@@ -1,4 +1,4 @@
-# BlitzExpansion 1.2.0
+# BlitzExpansion 1.2.1
 
 ## About
 
@@ -296,7 +296,7 @@ This function is optional.  If it is not called the message will default to type
 
 ## Change log
 
-### Develop branch
+### Version 1.2.1
 
  - `+` implement `START` and `STOP` logging messages
  - `~` transmission of logged data now ends with `ACK` response
