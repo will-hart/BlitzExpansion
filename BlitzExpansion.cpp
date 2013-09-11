@@ -18,6 +18,7 @@ BlitzExpansion::BlitzExpansion(char id, int bufferSize, int frequency) {
     this->m_maxIdx = bufferSize;
     this->m_frequency = frequency;
     this->m_frequencyDelay = (int)(1000 / frequency);
+    this->m_logging = false;
     
     this->m_serialBuffer = new char[BlitzMessage::MESSAGE_LENGTH];
     this->clearSerialBuffer();
@@ -64,8 +65,11 @@ void BlitzExpansion::begin(void (*sample)(void), bool (*instruction)(blitz_u8, b
  * This function should be called from within the main loop()
  */
 void BlitzExpansion::sample() {
-    // log a sample with the user defined function
-    this->m_onSample();
+
+    if (this->m_logging) {
+        // log a sample with the user defined function
+        this->m_onSample();
+    }
         
     // now delay (listening to serial) until the sampling
     // frequency delay rate is met
@@ -174,6 +178,14 @@ void BlitzExpansion::handleSerial() {
                         this->sendShortResponse(BLITZ_ERROR_UNKNOWN_INSTRUCTION);
                     }
                 }
+            } else if (msgType == BLITZ_START) {
+                this->m_logging = true;
+                this->m_sendIdx = this->m_currentIdx;
+                //this->m_startTime = millis();
+                this->sendShortResponse(BLITZ_RESPONSE_ACK);
+            } else if (msgType == BLITZ_STOP) {
+                this->m_logging = false;
+                this->sendShortResponse(BLITZ_RESPONSE_ACK);
             } else {
                 // unknown message error
                 this->sendShortResponse(BLITZ_ERROR_UNKNOWN_MESSAGE);
@@ -214,6 +226,8 @@ void BlitzExpansion::sendLog() {
             this->m_sendIdx = 0;
         }
     }
+
+    this->sendShortResponse(BLITZ_RESPONSE_ACK);
 }
 
 /** 
@@ -222,5 +236,15 @@ void BlitzExpansion::sendLog() {
  * last sent buffer position
  */
 void BlitzExpansion::sendStatus() {
-    this->sendShortResponse(BLITZ_ERROR_NOT_IMPLEMENTED);
+    BlitzMessage *msg = new BlitzMessage(this->m_id);
+    BlitzFormattedMessage output;
+    
+    msg->setFlag(3, true); // set as 'status response' instruction message
+    msg->pack(this->m_logging);
+    msg->pack(this->m_currentIdx, 10);
+    msg->pack(this->m_sendIdx, 10);
+    msg->setType(BLITZ_INSTRUCTION);
+    msg->renderInto(output);
+    
+    this->m_serial->println(output);
 }
