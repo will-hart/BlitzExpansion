@@ -43,6 +43,7 @@
 
 #define BLITZ_RESPONSE_ID "82"
 #define BLITZ_RESPONSE_STATUS "84"
+#define BLITZ_RESPONSE_ACK "40"
 
 class BlitzMessage
 {

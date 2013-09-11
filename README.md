@@ -296,6 +296,12 @@ This function is optional.  If it is not called the message will default to type
 
 ## Change log
 
+### Develop branch
+
+ - `+` implement `START` and `STOP` logging messages
+ - `~` transmission of logged data now ends with `ACK` response
+ - `~` update Arduino editor keywords
+
 ### Version 1.2.0
 
 In this version `BlitzExpansion` was updated to allow it to respond to instructions sent from the data logger.  Custom instructions can also be handled through an Arduino function.

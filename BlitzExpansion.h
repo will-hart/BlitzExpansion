@@ -20,6 +20,8 @@ class BlitzExpansion
         int m_maxIdx;
         int m_frequency;
         int m_frequencyDelay;
+        //long m_startTime;
+        bool m_logging;
         
         char* m_serialBuffer;
         int m_bufferIdx;
@@ -31,7 +33,6 @@ class BlitzExpansion
         
         void clearSerialBuffer();
         void handleSerial();
-        
 
 
     public:
@@ -42,6 +43,5 @@ class BlitzExpansion
         
         void sample();
         void log(BlitzFormattedMessage message);
-
 };
 #endif*/
