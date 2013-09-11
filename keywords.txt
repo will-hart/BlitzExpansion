@@ -4,6 +4,11 @@ BlitzExpansion          KEYWORD1
 BlitzFormattedMessage   KEYWORD1
 
 ### functions
+asHex                   KEYWORD2
+build_U16               KEYWORD2
+getFlag                 KEYWORD2
+getInstruction          KEYWORD2
+getType                 KEYWORD2
 pack                    KEYWORD2
 renderInto              KEYWORD2
 send_flag               KEYWORD2
