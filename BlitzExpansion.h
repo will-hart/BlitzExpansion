@@ -33,6 +33,8 @@ class BlitzExpansion
         
         void clearSerialBuffer();
         void handleSerial();
+        
+        static const unsigned short ON_BOARD_LED = 13;
 
 
     public:

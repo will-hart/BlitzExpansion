@@ -38,6 +38,9 @@ void BlitzExpansion::begin(void (*function)(void), HardwareSerial *serial)
   this->m_onSample = function;
   this->m_onInstruction = NULL;
   this->m_serial = serial;
+  
+  // switch off the LED
+  digitalWrite(BlitzExpansion::ON_BOARD_LED, LOW);
 }
 
 /** 
@@ -179,12 +182,18 @@ void BlitzExpansion::handleSerial() {
                     }
                 }
             } else if (msgType == BLITZ_START) {
-                this->m_logging = true;
+                // switch on the LED
+                digitalWrite(BlitzExpansion::ON_BOARD_LED, HIGH);
+
                 this->m_sendIdx = this->m_currentIdx;
-                //this->m_startTime = millis();
+                this->m_logging = true;
                 this->sendShortResponse(BLITZ_RESPONSE_ACK);
+                
             } else if (msgType == BLITZ_STOP) {
+                // switch off the LED
+                digitalWrite(BlitzExpansion::ON_BOARD_LED, LOW);
                 this->m_logging = false;
+
                 this->sendShortResponse(BLITZ_RESPONSE_ACK);
             } else {
                 // unknown message error
