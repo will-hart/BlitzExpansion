@@ -73,7 +73,7 @@ void BlitzExpansion::sample() {
         // log a sample with the user defined function
         this->m_onSample();
     }
-        
+    
     // now delay (listening to serial) until the sampling
     // frequency delay rate is met
     long target = millis() + this->m_frequencyDelay;
@@ -93,7 +93,6 @@ void BlitzExpansion::sample() {
  * to the serial buffer, incrementing indices as required
  */
 void BlitzExpansion::log(BlitzFormattedMessage message) {
-
     // allocate memory for the new message
     char *savedMessage = new BlitzFormattedMessage;
     strcpy(savedMessage, message);
@@ -144,6 +143,7 @@ void BlitzExpansion::handleSerial() {
         
         // we have received a complete message
         if (this->m_serialBuffer[this->m_bufferIdx - 1] == '\n') {
+        
             if (this->m_bufferIdx < 4) {
                 // message too short error
                 this->clearSerialBuffer();
@@ -152,7 +152,11 @@ void BlitzExpansion::handleSerial() {
         
             short msgType = BlitzMessage::getType(this->m_serialBuffer);
             if (msgType == BLITZ_TRANSMIT) {
-                this->sendLog();
+                if (this->m_logging == true) {
+                    this->sendLog();
+                } else {
+                    this->sendShortResponse(BLITZ_ERROR_NOT_CURRENTLY_LOGGING);
+                }
             } else if (msgType == BLITZ_INSTRUCTION) {
                 char instruction = BlitzMessage::getInstruction(this->m_serialBuffer);
                 
