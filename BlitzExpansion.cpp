@@ -5,7 +5,7 @@
  * the board, the message buffer size and the update frequency
  */
 BlitzExpansion::BlitzExpansion(char id, int bufferSize, int frequency) {
-    m_id = id;
+    this->m_id = id;
     this->m_messageBuffer = new char*[bufferSize];
     
     // pre-seed the buffer
@@ -24,6 +24,9 @@ BlitzExpansion::BlitzExpansion(char id, int bufferSize, int frequency) {
     this->clearSerialBuffer();
     
     this->m_bufferIdx = 0;
+    
+    pinMode(BlitzExpansion::ON_BOARD_LED, OUTPUT);
+    digitalWrite(BlitzExpansion::ON_BOARD_LED, LOW);
 }
 
 /** 

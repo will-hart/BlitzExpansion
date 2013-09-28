@@ -9,9 +9,9 @@ Serial at 57600 instead */
 
 // set up adc values
 int adc[3];
-const int ADC1_PIN = 2;
-const int ADC2_PIN = 3;
-const int ADC3_PIN = 4;
+const int ADC1_PIN = 5;
+const int ADC2_PIN = 6;
+const int ADC3_PIN = 7;
 const int DIG1_PIN = 22;
 const int DIG2_PIN = 23;
 const int DIG3_PIN = 24;
@@ -57,8 +57,8 @@ void loop() {
 
 void logCurrentMessage(void) {
   int adc1 = analogRead(ADC1_PIN), 
-      adc2 = 0, //analogRead(ADC2_PIN), 
-      adc3 = 0; //analogRead(ADC3_PIN);
+      adc2 = analogRead(ADC2_PIN), 
+      adc3 = analogRead(ADC3_PIN);
   BlitzFormattedMessage rawMessage;
       
   // update the averages
