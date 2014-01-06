@@ -6,7 +6,7 @@
 
 ## License
 
-This Arduino library is Copyright William Hart (2013) and released under an LGPLv3 license.  See [www.blitzlogger.com](http://www.blitzlogger.com) for more information.  If you do make any fixes or improvements please contribute a pull request through github so that everybody can benefit.
+This Arduino library is Copyright William Hart (2013) and released under an LGPLv3 license.  If you do make any fixes or improvements please contribute a pull request through github so that everybody can benefit.
 
 ## Usage
 
