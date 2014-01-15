@@ -121,16 +121,16 @@ char *blitz_payload::render(char *dest) {
     
     // slightly hackishly copy all the variables over directly 
     // (instead of using memset or similar)
-    dest[0]  = high_a[0];
-    dest[1]  = high_a[1];
-    dest[2]  = high_a[2];
-    dest[3]  = high_a[3];
-    dest[4]  = high_b[0];
-    dest[5]  = high_b[1];
-    dest[6]  = high_b[2];
-    dest[7]  = high_b[3];
-    dest[8]  = low_a [0];
-    dest[9]  = low_a [1];
+    dest[ 0] = high_a[0];
+    dest[ 1] = high_a[1];
+    dest[ 2] = high_a[2];
+    dest[ 3] = high_a[3];
+    dest[ 4] = high_b[0];
+    dest[ 5] = high_b[1];
+    dest[ 6] = high_b[2];
+    dest[ 7] = high_b[3];
+    dest[ 8] = low_a [0];
+    dest[ 9] = low_a [1];
     dest[10] = low_a [2];
     dest[11] = low_a [3];
     dest[12] = low_b [0];
