@@ -7,16 +7,12 @@ blitz_payload::blitz_payload()
     this->m_length = 0;
 }
 
-bool blitz_payload::pack(bool set_bit) {
-    if (this->m_length >= 63) {
+bool blitz_payload::_set_bit_safe(bool set_bit) {
+    
+    if (this->m_length > 63) {
         return false;
     }
-    
-    this->_set_bit_safe(set_bit);
-    return true;
-}
 
-bool blitz_payload::_set_bit_safe(bool set_bit) {
     if (this->m_length > 31) {
         // get the top most bit in low and shift it into high
         char mask = this->m_low >> 31;
@@ -32,6 +28,12 @@ bool blitz_payload::_set_bit_safe(bool set_bit) {
     }
     
     this->m_length++;
+    return true;
+}
+
+bool blitz_payload::pack(bool set_bit) {
+    
+    this->_set_bit_safe(set_bit);
     return true;
 }
 
@@ -112,7 +114,6 @@ char *blitz_payload::render(char *dest) {
     // pad out the longs
     while (this->m_length < 63) {
         this->_set_bit_safe(false);
-        ++this->m_length;
     }
     
     // break the longs into ints to allow sprintf conversion to hex
