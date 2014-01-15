@@ -45,11 +45,10 @@ bool blitz_payload::pack(unsigned char set_char, blitz_u16 precision) {
     unsigned char mask = ~(0xFF << precision);
     unsigned char masked_data = mask & set_char;
 
-    // iterate through the data and setbit
-    for (int i = precision; i > 0; --i) {
-        bool set_bit = (masked_data & 0x01) == 0x01;
+    // iterate through the data and set the required bits
+    for (int i = precision - 1; i >= 0; --i) {
+        bool set_bit = ((masked_data >> i) & 0x01) == 0x01;
         result = result && this->_set_bit_safe(set_bit);
-        masked_data >>= 1;
     }
     
     return result;
@@ -63,11 +62,10 @@ bool blitz_payload::pack(unsigned int set_int, blitz_u16 precision) {
     unsigned int mask = ~(0xFFFF << precision);
     unsigned int masked_data = mask & set_int;
 
-    // iterate through the data and setbit
-    for (int i = precision; i > 0; --i) {
-        bool set_bit = (masked_data & 0x01) == 0x01;
+    // iterate through the data and set the required bits
+    for (int i = precision - 1; i >= 0; --i) {
+        bool set_bit = ((masked_data >> i) & 0x01) == 0x01;
         result = result && this->_set_bit_safe(set_bit);
-        masked_data >>= 1;
     }
     
     return result;
@@ -81,11 +79,10 @@ bool blitz_payload::pack(unsigned long set_long, blitz_u16 precision) {
     unsigned long mask = ~(0xFFFFFFFF << precision);
     unsigned long masked_data = mask & set_long;
 
-    // iterate through the data and setbit
-    for (int i = precision; i > 0; --i) {
-        bool set_bit = (masked_data & 0x01) == 0x01;
+    // iterate through the data and set the required bits
+    for (int i = precision - 1; i >= 0; --i) {
+        bool set_bit = ((masked_data >> i) & 0x01) == 0x01;
         result = result && this->_set_bit_safe(set_bit);
-        masked_data >>= 1;
     }
     
     return result;
