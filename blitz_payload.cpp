@@ -16,7 +16,7 @@ bool blitz_payload::pack(bool set_bit) {
     return true;
 }
 
-void blitz_payload::_set_bit_safe(bool set_bit) {
+bool blitz_payload::_set_bit_safe(bool set_bit) {
     if (this->m_length > 31) {
         // get the top most bit in low and shift it into high
         char mask = this->m_low >> 31;
@@ -32,6 +32,7 @@ void blitz_payload::_set_bit_safe(bool set_bit) {
     }
     
     this->m_length++;
+    return true;
 }
 
 bool blitz_payload::pack(unsigned char set_char, blitz_u16 precision) {    
@@ -39,6 +40,8 @@ bool blitz_payload::pack(unsigned char set_char, blitz_u16 precision) {
         precision > 8) {
         return false;
     }
+    
+    bool result = true;
 
     // build a mask for the char to add
     unsigned char mask = ~(0xFF << precision);
@@ -49,11 +52,11 @@ bool blitz_payload::pack(unsigned char set_char, blitz_u16 precision) {
     // iterate through the data and setbit
     for (int i = precision; i > 0; --i) {
         bool set_bit = (masked_data & 0x01) == 0x01;
-        this->_set_bit_safe(set_bit);
+        result = result && this->_set_bit_safe(set_bit);
         masked_data >>= 1;
     }
     
-    return true;
+    return result;
 }
 
 bool blitz_payload::pack(unsigned int set_int, blitz_u16 precision) {
@@ -61,6 +64,8 @@ bool blitz_payload::pack(unsigned int set_int, blitz_u16 precision) {
         precision > 16) {
         return false;
     }
+    
+    bool result = true;
 
     // build a mask for the char to add
     unsigned int mask = ~(0xFFFF << precision);
@@ -71,11 +76,11 @@ bool blitz_payload::pack(unsigned int set_int, blitz_u16 precision) {
     // iterate through the data and setbit
     for (int i = precision; i > 0; --i) {
         bool set_bit = (masked_data & 0x01) == 0x01;
-        this->_set_bit_safe(set_bit);
+        result = result && this->_set_bit_safe(set_bit);
         masked_data >>= 1;
     }
     
-    return true;
+    return result;
 }
 
 bool blitz_payload::pack(unsigned long set_long, blitz_u16 precision) {
@@ -83,6 +88,8 @@ bool blitz_payload::pack(unsigned long set_long, blitz_u16 precision) {
         precision > 32) {
         return false;
     }
+    
+    bool result = true;
 
     // build a mask for the char to add
     unsigned long mask = ~(0xFFFFFFFF << precision);
@@ -93,11 +100,11 @@ bool blitz_payload::pack(unsigned long set_long, blitz_u16 precision) {
     // iterate through the data and setbit
     for (int i = precision; i > 0; --i) {
         bool set_bit = (masked_data & 0x01) == 0x01;
-        this->_set_bit_safe(set_bit);
+        result = result && this->_set_bit_safe(set_bit);
         masked_data >>= 1;
     }
     
-    return true;
+    return result;
 }
 
 char *blitz_payload::render(char *dest) {
