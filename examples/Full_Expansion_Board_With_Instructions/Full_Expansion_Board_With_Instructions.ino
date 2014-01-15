@@ -1,6 +1,3 @@
-/* This version drops I2C support and uses 
-Serial at 57600 instead */
-
 #include <BlitzExpansion.h>
 
 #define SLAVE_ADDRESS 0x08
@@ -83,9 +80,9 @@ void logMessage() {
   BlitzFormattedMessage rawMessage;
   
   // pack in the ADC values
-  builder.pack(adc[0], 10);
-  builder.pack(adc[1], 10);
-  builder.pack(adc[2], 10);
+  builder.pack(adc[0], 12);
+  builder.pack(adc[1], 12);
+  builder.pack(adc[2], 12);
   
   // set the digital flags
   builder.setFlag(1, digitalRead(DIG1_PIN));
