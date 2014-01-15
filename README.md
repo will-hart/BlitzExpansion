@@ -1,4 +1,4 @@
-# BlitzExpansion 1.2.1
+# BlitzExpansion 1.2.2
 
 ## About
 
@@ -6,58 +6,58 @@
 
 ## License
 
-This Arduino library is Copyright William Hart (2013) and released under an LGPLv3 license.  If you do make any fixes or improvements please contribute a pull request through github so that everybody can benefit.
+This Arduino library is Copyright William Hart (2014) and released under an LGPLv3 license.  If you do make any fixes or improvements please contribute a pull request through github so that everybody can benefit.
 
 ## Usage
 
 The following example reads a single ADC and stores this in a message format.  The `BlitzExpansion` object takes care of all formatting and buffering of messages and serial communications.
 
     // include the library
-	#include <BlitzExpansion.h>
-	
-	// set up some definitions for board configuration
-	#define SLAVE_ADDRESS 0x08
-	#define BUFFER_SIZE 180
-	#define FREQUENCY_HZ 1
-	#define ADC_PIN 2
-	
-	// create the library instance
-	BlitzExpansion expansion = BlitzExpansion(SLAVE_ADDRESS, BUFFER_SIZE, FREQUENCY_HZ);
-	
-	// set up a message builder
-	BlitzMessage builder = BlitzMessage(SLAVE_ADDRESS);
-	
-	void setup() {
-	    pinMode(ADC_PIN, INPUT);
-	    Serial.begin(57600);
-	
-	    // The expansion board needs to know the function 
-	    // to use for saving data and also needs a reference
-        // to the serial port
-	    expansion.begin(logMessage, &Serial);
-	}
-	
-	void loop() {
-	    // this samples at the given freuqency and
-	    // also listens for serial messages
-	    // from the data logger
-	    expansion.sample();
-	}
-	
-	// our data logging function, linked to
-	// the expansion board through expansion.begin()
-	void logMessage() {
-	    BlitzFormattedMessage rawMessage;
-	    int adc = analogRead(ADC_PIN);
-	
-	    // build the message
-	    builder.pack(adc, 10); // pack the ADC reading to 
-	                           // 10 bit precision
-	    builder.renderInto(rawMessage);
-	
-	    // queue the message in the expansion board buffer
-	    expansion.log(rawMessage);
-	}
+    #include <BlitzExpansion.h>
+  
+    // set up some definitions for board configuration
+    #define SLAVE_ADDRESS 0x08
+    #define BUFFER_SIZE 180
+    #define FREQUENCY_HZ 1
+    #define ADC_PIN 2
+    
+    // create the library instance
+    BlitzExpansion expansion = BlitzExpansion(SLAVE_ADDRESS, BUFFER_SIZE, FREQUENCY_HZ);
+    
+    // set up a message builder
+    BlitzMessage builder = BlitzMessage(SLAVE_ADDRESS);
+    
+    void setup() {
+        pinMode(ADC_PIN, INPUT);
+        Serial.begin(57600);
+    
+        // The expansion board needs to know the function 
+        // to use for saving data and also needs a reference
+          // to the serial port
+        expansion.begin(logMessage, &Serial);
+    }
+    
+    void loop() {
+        // this samples at the given freuqency and
+        // also listens for serial messages
+        // from the data logger
+        expansion.sample();
+    }
+    
+    // our data logging function, linked to
+    // the expansion board through expansion.begin()
+    void logMessage() {
+        BlitzFormattedMessage rawMessage;
+        int adc = analogRead(ADC_PIN);
+    
+        // build the message
+        builder.pack(adc, 10); // pack the ADC reading to 
+                               // 10 bit precision
+        builder.renderInto(rawMessage);
+    
+        // queue the message in the expansion board buffer
+        expansion.log(rawMessage);
+    }
     
 
 The following simple example shows how to use the `BlitzMessage` class for packing messages in the data logger format:
@@ -93,14 +93,9 @@ Several examples are included - either look in the `[Arduino Folder]/libraries/B
 
 ## Speed tests
 
-The `Speed_Tests.ino` example provides a very rough estimate of message packing speed.  This shows that for version `1.0.0` of `BlitzExpansion` an Arduino Due can generate about 7,500 messages per second.  The output of the `Speed_Tests` file is:
+The `Speed_Tests.ino` example provides a very rough estimate of message packing speed.  This shows that for version `1.2.2` of `BlitzExpansion` an Arduino Uno R3 can render messages at a rate of 670 per second:
 
- > Generated 10,000 messages in 1.330000013 seconds
-
-On an Arduino Uno R3 I get a rate of 1,250 messages per second:
-
- > Generated 10,000 messages in 7.996000289 seconds
-
+ > Generated 10,000 messages in 15.0500001907 seconds
 
 ## API
 
@@ -295,6 +290,12 @@ Typically messages transmitted from the expansion board to the data logger will 
 This function is optional.  If it is not called the message will default to type `5`. 
 
 ## Change log
+
+### Version 1.2.2
+
+ - `+` Use status LED to indicate logging
+ - `~` Update some examples
+ - `~` rewrite payload packing functions to set correct L -> R bit ordering.  e.g. packing the value 1 at twelve bit precision produces a payload of `00100000000000000000000000000000`, not `00000000000000000000000000000001`
 
 ### Version 1.2.1
 

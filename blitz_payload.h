@@ -24,7 +24,7 @@ class blitz_payload
         blitz_u32 m_low;
         blitz_u16 m_length;
         
-        void _set_bit_safe(bool set_bit);
+        bool _set_bit_safe(bool set_bit);
         
     public:
         blitz_payload();

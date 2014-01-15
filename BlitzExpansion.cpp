@@ -4,9 +4,11 @@
  * Constructor for a BlitzExpansion object.  Sets the ID of 
  * the board, the message buffer size and the update frequency
  */
-BlitzExpansion::BlitzExpansion(char id, int bufferSize, int frequency) {
-    m_id = id;
+BlitzExpansion::BlitzExpansion(char id, int bufferSize, int frequency, int sendFrequency) {
+    this->m_id = id;
     this->m_messageBuffer = new char*[bufferSize];
+    this->m_sendFrequency = sendFrequency;
+    this->m_sendCounter = 0;
     
     // pre-seed the buffer
     for (int i = 0; i < bufferSize; ++i) {
@@ -24,32 +26,40 @@ BlitzExpansion::BlitzExpansion(char id, int bufferSize, int frequency) {
     this->clearSerialBuffer();
     
     this->m_bufferIdx = 0;
+    
+    pinMode(BlitzExpansion::ON_BOARD_LED, OUTPUT);
+    digitalWrite(BlitzExpansion::ON_BOARD_LED, LOW);
 }
 
 /** 
- * The function (specified by the user) that determines
- * what happens when a sample is taken.  This should use
- * the BlitzExpansion->builder to create a BlitzFormattedMessage
- * and then save this message to the buffer using 
- * BlitzExpansion::log()
+ * Connects up sampling and logging functions and passes a reference to the serial class.  
+ *
+ * The "log" function MUST call BlitzExpansion::log to save messages
  */
-void BlitzExpansion::begin(void (*function)(void), HardwareSerial *serial)
-{
-  this->m_onSample = function;
-  this->m_onInstruction = NULL;
-  this->m_serial = serial;
-}
-
-/** 
- * The function (specified by the user) that determines
- * what happens when a sample is taken.  This should use
- * the BlitzExpansion->builder to create a BlitzFormattedMessage
- * and then save this message to the buffer using 
- * BlitzExpansion::log()
- */
-void BlitzExpansion::begin(void (*sample)(void), bool (*instruction)(blitz_u8, blitz_u16*), HardwareSerial *serial)
+void BlitzExpansion::connect(void (*sample)(void), void (*log)(void), HardwareSerial *serial)
 {
   this->m_onSample = sample;
+  this->m_onLog = log;
+  this->m_onInstruction = NULL;
+  this->m_serial = serial;
+  
+  // switch off the LED
+  digitalWrite(BlitzExpansion::ON_BOARD_LED, LOW);
+}
+
+/** 
+ * Connects up sampling, logging and instruction handling functions and passes 
+ * a reference to the serial class.  
+ *
+ * The "log" function MUST call BlitzExpansion::log to save messages
+ */
+void BlitzExpansion::connect(void (*sample)(void), 
+                            void (*log)(void), 
+                            bool (*instruction)(blitz_u8, blitz_u16*), 
+                            HardwareSerial *serial)
+{
+  this->m_onSample = sample;
+  this->m_onLog = log;
   this->m_onInstruction = instruction;
   this->m_serial = serial;
 }
@@ -69,8 +79,16 @@ void BlitzExpansion::sample() {
     if (this->m_logging) {
         // log a sample with the user defined function
         this->m_onSample();
+    
+        // check if it is time to log a message
+        if (this->m_sendCounter >= this->m_sendFrequency) {
+            this->m_onLog();
+            this->m_sendCounter = 0;
+        } else {
+            this->m_sendCounter++;
+        }
     }
-        
+    
     // now delay (listening to serial) until the sampling
     // frequency delay rate is met
     long target = millis() + this->m_frequencyDelay;
@@ -90,7 +108,6 @@ void BlitzExpansion::sample() {
  * to the serial buffer, incrementing indices as required
  */
 void BlitzExpansion::log(BlitzFormattedMessage message) {
-
     // allocate memory for the new message
     char *savedMessage = new BlitzFormattedMessage;
     strcpy(savedMessage, message);
@@ -141,6 +158,7 @@ void BlitzExpansion::handleSerial() {
         
         // we have received a complete message
         if (this->m_serialBuffer[this->m_bufferIdx - 1] == '\n') {
+        
             if (this->m_bufferIdx < 4) {
                 // message too short error
                 this->clearSerialBuffer();
@@ -149,7 +167,11 @@ void BlitzExpansion::handleSerial() {
         
             short msgType = BlitzMessage::getType(this->m_serialBuffer);
             if (msgType == BLITZ_TRANSMIT) {
-                this->sendLog();
+                if (this->m_logging == true) {
+                    this->sendLog();
+                } else {
+                    this->sendShortResponse(BLITZ_ERROR_NOT_CURRENTLY_LOGGING);
+                }
             } else if (msgType == BLITZ_INSTRUCTION) {
                 char instruction = BlitzMessage::getInstruction(this->m_serialBuffer);
                 
@@ -179,12 +201,19 @@ void BlitzExpansion::handleSerial() {
                     }
                 }
             } else if (msgType == BLITZ_START) {
-                this->m_logging = true;
+                // switch on the LED
+                digitalWrite(BlitzExpansion::ON_BOARD_LED, HIGH);
+
                 this->m_sendIdx = this->m_currentIdx;
-                //this->m_startTime = millis();
+                this->m_logging = true;
+                this->m_sendCounter = 0;
                 this->sendShortResponse(BLITZ_RESPONSE_ACK);
+                
             } else if (msgType == BLITZ_STOP) {
+                // switch off the LED
+                digitalWrite(BlitzExpansion::ON_BOARD_LED, LOW);
                 this->m_logging = false;
+
                 this->sendShortResponse(BLITZ_RESPONSE_ACK);
             } else {
                 // unknown message error
