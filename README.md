@@ -1,4 +1,4 @@
-# BlitzExpansion 1.2.1
+# BlitzExpansion 1.2.2
 
 ## About
 
@@ -6,65 +6,58 @@
 
 ## License
 
-This Arduino library is Copyright William Hart (2013) and released under an LGPLv3 license.  See [www.blitzlogger.com](http://www.blitzlogger.com) for more information.  If you do make any fixes or improvements please contribute a pull request through github so that everybody can benefit.
+This Arduino library is Copyright William Hart (2014) and released under an LGPLv3 license.  If you do make any fixes or improvements please contribute a pull request through github so that everybody can benefit.
 
 ## Usage
 
 The following example reads a single ADC and stores this in a message format.  The `BlitzExpansion` object takes care of all formatting and buffering of messages and serial communications.
 
     // include the library
-	#include <BlitzExpansion.h>
-	
-	// set up some definitions for board configuration
-	#define SLAVE_ADDRESS 0x08
-	#define BUFFER_SIZE 180
-	#define SAMPLE_FREUQENCY 1
-	#define SEND_FREUQENCY 1
-	#define ADC_PIN 2
-	
-	// create the library instance
-	BlitzExpansion expansion = BlitzExpansion(SLAVE_ADDRESS, BUFFER_SIZE, SAMPLE_FREQUENCY, SEND_FREQUENCY);
-	
-	// set up a message builder
-	BlitzMessage builder = BlitzMessage(SLAVE_ADDRESS);
-
-	// set up an ADC variable for holding ADC values
-    int adcValue = 0;
-	
-	void setup() {
-	    pinMode(ADC_PIN, INPUT);
-	    Serial.begin(57600);
-	
-	    // The expansion board needs to know the function 
-	    // to use for saving data and also needs a reference
-        // to the serial port
-	    expansion.connect(sample, log, &Serial);
-	}
-	
-	void loop() {
-	    // this samples at the given freuqency and
-	    // also listens for serial messages
-	    // from the data logger
-	    expansion.sample();
-	}
-	
-	// our data logging function, linked to
-	// the expansion board through expansion.begin()
-	void sample() {
-	    adcValue = analogRead(ADC_PIN);
+    #include <BlitzExpansion.h>
+  
+    // set up some definitions for board configuration
+    #define SLAVE_ADDRESS 0x08
+    #define BUFFER_SIZE 180
+    #define FREQUENCY_HZ 1
+    #define ADC_PIN 2
+    
+    // create the library instance
+    BlitzExpansion expansion = BlitzExpansion(SLAVE_ADDRESS, BUFFER_SIZE, FREQUENCY_HZ);
+    
+    // set up a message builder
+    BlitzMessage builder = BlitzMessage(SLAVE_ADDRESS);
+    
+    void setup() {
+        pinMode(ADC_PIN, INPUT);
+        Serial.begin(57600);
+    
+        // The expansion board needs to know the function 
+        // to use for saving data and also needs a reference
+          // to the serial port
+        expansion.begin(logMessage, &Serial);
     }
-	
-    // log a message
-    void log() {
-	    BlitzFormattedMessage rawMessage;
-	    // build the message
-	    builder.pack(adc, 10); // pack the ADC reading to 
-	                           // 10 bit precision
-	    builder.renderInto(rawMessage);
-	
-	    // queue the message in the expansion board buffer
-	    expansion.log(rawMessage);
-	}
+    
+    void loop() {
+        // this samples at the given freuqency and
+        // also listens for serial messages
+        // from the data logger
+        expansion.sample();
+    }
+    
+    // our data logging function, linked to
+    // the expansion board through expansion.begin()
+    void logMessage() {
+        BlitzFormattedMessage rawMessage;
+        int adc = analogRead(ADC_PIN);
+    
+        // build the message
+        builder.pack(adc, 10); // pack the ADC reading to 
+                               // 10 bit precision
+        builder.renderInto(rawMessage);
+    
+        // queue the message in the expansion board buffer
+        expansion.log(rawMessage);
+    }
     
 
 The following simple example shows how to use the `BlitzMessage` class for packing messages in the data logger format:
@@ -100,14 +93,9 @@ Several examples are included - either look in the `[Arduino Folder]/libraries/B
 
 ## Speed tests
 
-The `Speed_Tests.ino` example provides a very rough estimate of message packing speed.  This shows that for version `1.0.0` of `BlitzExpansion` an Arduino Due can generate about 7,500 messages per second.  The output of the `Speed_Tests` file is:
+The `Speed_Tests.ino` example provides a very rough estimate of message packing speed.  This shows that for version `1.2.2` of `BlitzExpansion` an Arduino Uno R3 can render messages at a rate of 670 per second:
 
- > Generated 10,000 messages in 1.330000013 seconds
-
-On an Arduino Uno R3 I get a rate of 1,250 messages per second:
-
- > Generated 10,000 messages in 7.996000289 seconds
-
+ > Generated 10,000 messages in 15.0500001907 seconds
 
 ## API
 
@@ -129,35 +117,32 @@ A 32 bit unsigned number equivalent to `unsigned long` for most Atmel Arduino's,
 
 #### Constructor (BlitzExpansion::BlitzExpansion)
 
-    BlitzExpansion(char id, int bufferSize, int frequency, int sendFrequency);
+    BlitzExpansion(char id, int bufferSize, int frequency);
 
 Constructs a new instance of a BlitzExpansion board that can be used to carry out communications and buffer messages for transmission to the data logger. The constructor takes three arguments:
 
  - **id**: a single character (e.g. `0x08`) representing the expansion board ID
  - **bufferSize**: the number of `BlitzFormattedMessages` to store (in a circular buffer)
  - **frequency**: the (integer) frequency to sample at
- - **sendFrequency**: the (integer) number of samples to wait before logging a reading - for instance allows reading ADCs at 10Hz and logging at 1 Hz
        
-#### BlitzExpansion::connect() (two overloads) 
+#### BlitzExpansion::begin() (two overloads) 
 
-    void begin(void (*sample)(void), void (*log)(void), HardwareSerial *serial);
+    void begin(void (*function)(void), HardwareSerial *serial);
         
 Configures the `BlitzExpansion` instance for logging and communicating using the given sampling function and reference to the serial class. The two arguments are:
 
- - **sample**: a function to use to sample sensors.  
- - **log**: a function to use to log sensor readings (from values saved during sample). This function should be used only to build up a `BlitzMessage` and call `BlitzExpansion::log` to save the output.
+ - **function**: a function to use to sample and log messages.  This function should call `BlitzExpansion::log` with a formatted message.
  - **serial**: a reference to the serial adapter being used for communications - usually obtained by `&Serial`
 
 The passed **function** should have the signature: `void myFunction()`
 
-    void begin(void (*sample)(void), void (*log)(void), bool (*instruction)(blitz_u8, blitz_u16*), HardwareSerial *serial);
+    void begin(void (*sample)(void), bool (*instruction)(blitz_u8, blitz_u16*), HardwareSerial *serial);
 
 Configures the `BlitzExpansion` as for the `begin()` version above and additionally provides a function for handling instructions received from the data logger. This function should have the signature `bool myHandler (unsigned char id, unsigned short* payload)`
 
 This overloaded function has three arguments: 
 
- - **sample**: a function to use to sample sensors.  
- - **log**: a function to use to log sensor readings (from values saved during sample). This function should be used only to build up a `BlitzMessage` and call `BlitzExpansion::log` to save the output.
+ - **sample**: as per `function` in the previous `begin` description
  - **instruction**: a function for parsing custom board instructions, receives the ID and the message payload broken into four 16 bit `blitz_u16` array elements.
  - **serial**: a reference to the serial adapter being used for communications - usually obtained by `&Serial`
 
@@ -173,9 +158,7 @@ Takes a `BlitzFormattedMessage` and stores it in the `BlitzExpansion` circular b
 
     void sample();
         
-This function should be called from within the main loop. It takes a single set of sensor readings using the sample function provided in `BlitzExpansion::begin()`, then listens for serial messages until the required sampling frequency is obtained. If a significant amount of serial activity is undertaken (for instance transmitting a large amount of messages from the buffer) there may be some delays in sampling.  This function takes no arguments.
-
-This function also keeps a running counter of samples, and when the number of samples specified in `sendFrequency` in the constructor has been met, it logs a reading for transmission to the data logger by using the `log` function provided in `BlitzExpansion::connect()`
+This function should be called from within the main loop. It takes a single sample using the given sample function, then listens for serial messages until the required sampling frequency is obtained. If a significant amount of serial activity is undertaken (for instance transmitting a large amount of messages from the buffer) there may be some delays in sampling.  This function takes no arguments.
 
 ### BlitzFormattedMessage
 
@@ -307,6 +290,12 @@ Typically messages transmitted from the expansion board to the data logger will 
 This function is optional.  If it is not called the message will default to type `5`. 
 
 ## Change log
+
+### Version 1.2.2
+
+ - `+` Use status LED to indicate logging
+ - `~` Update some examples
+ - `~` rewrite payload packing functions to set correct L -> R bit ordering.  e.g. packing the value 1 at twelve bit precision produces a payload of `00100000000000000000000000000000`, not `00000000000000000000000000000001`
 
 ### Version 1.2.1
 
