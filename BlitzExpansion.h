@@ -3,6 +3,7 @@
 
 #include "blitz_payload.h"
 #include "BlitzMessage.h"
+#include "BlitzPID.h"
 
 #include "Arduino.h"
 #include "HardwareSerial.h"
