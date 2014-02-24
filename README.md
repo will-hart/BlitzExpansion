@@ -1,4 +1,4 @@
-# BlitzExpansion 1.2.2
+# BlitzExpansion 1.3
 
 ## About
 
