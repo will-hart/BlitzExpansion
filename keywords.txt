@@ -2,6 +2,7 @@
 BlitzMessage            KEYWORD1
 BlitzExpansion          KEYWORD1
 BlitzFormattedMessage   KEYWORD1
+BlitzPID                KEYWORD1
 
 ### functions
 asHex                   KEYWORD2
@@ -14,5 +15,7 @@ renderInto              KEYWORD2
 send_flag               KEYWORD2
 send_serial             KEYWORD2
 send_wire               KEYWORD2
+set                     KEYWORD2
+update                  KEYWORD2
 zero_flags              KEYWORD2
 zero_payload            KEYWORD2

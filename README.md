@@ -1,4 +1,4 @@
-# BlitzExpansion 1.2.2
+# BlitzExpansion 1.3
 
 ## About
 
@@ -289,7 +289,42 @@ Typically messages transmitted from the expansion board to the data logger will 
 
 This function is optional.  If it is not called the message will default to type `5`. 
 
+### BlitzPID
+
+#### Constructor (BlitzPID::BlitzPID)
+
+    BlitzPID(float kp, float ki, float kd);
+
+Constructs a new instance of a BlitzPID controller with the given constants. The constructor takes three arguments:
+
+ - **kp**: the proportional constant
+ - **ki**: the integral constant
+ - **kd**: the derivative constant
+       
+#### BlitzPID::set
+
+    void set(float set_point, blitz_u32 millis);
+        
+Sets the target value or "set point" of the controller:
+
+ - **set_point**: the float value the controller is attempting to achieve
+ - **millis**: the current system time in millis()
+
+#### BlitzPID::update
+
+    float update(float actual_value, blitz_u32 millis);
+        
+Updates the controller and returns the value to add to the plant set value:
+
+ - **actual_point**: the actual value read from the sensor and converted into controller terms
+ - **millis**: the current system time in millis()
+
+
 ## Change log
+
+### Version 1.3.0
+
+ - `+` Implement the `BlitzPID` PID controller class
 
 ### Version 1.2.2
 
