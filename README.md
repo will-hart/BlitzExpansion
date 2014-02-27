@@ -160,6 +160,14 @@ Takes a `BlitzFormattedMessage` and stores it in the `BlitzExpansion` circular b
         
 This function should be called from within the main loop. It takes a single sample using the given sample function, then listens for serial messages until the required sampling frequency is obtained. If a significant amount of serial activity is undertaken (for instance transmitting a large amount of messages from the buffer) there may be some delays in sampling.  This function takes no arguments.
 
+#### BlitzExpansion::send()
+
+    void send(BlitzFormattedMessage message);
+
+Sends a message immediately over serial without adding it to the send buffer. This can be used to respond to instructions with customised response codes. This function takes a single argument:
+
+ - **message**: the `BlitzFormattedMessage` (a `char[29]`) to immediately send
+
 ### BlitzFormattedMessage
 
     typedef char BlitzFormattedMessage[29];
