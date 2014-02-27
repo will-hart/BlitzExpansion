@@ -33,7 +33,6 @@ class BlitzExpansion
         void sendId();
         void sendStatus();
         void sendLog();
-        void sendShortResponse(char *code);
         
         void clearSerialBuffer();
         void handleSerial();
@@ -49,5 +48,8 @@ class BlitzExpansion
         
         void sample();
         void log(BlitzFormattedMessage message);
+        
+        void send(BlitzFormattedMessage message);
+        void sendShortResponse(char *code);
 };
 #endif*/

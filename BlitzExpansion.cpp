@@ -136,6 +136,12 @@ void BlitzExpansion::log(BlitzFormattedMessage message) {
     }
 }
 
+/** 
+ * Sends a single message immediately to the data logger without buffering
+ */
+void BlitzExpansion::send(BlitzFormattedMessage message) {
+    this->m_serial->println(message);
+}
 
 /** 
  * Clears the serial buffer
