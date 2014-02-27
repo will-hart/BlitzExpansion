@@ -45,7 +45,6 @@ float BlitzPID::update(float actual_value, blitz_u32 millis) {
     this->m_last_millis = millis;
     this->m_last_integral = i;
     this->m_last_error = error;
-    this->m_last_delta = delta_time;
     
     return p + i + d;
 }
