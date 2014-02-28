@@ -179,11 +179,11 @@ void BlitzExpansion::handleSerial() {
                     this->sendShortResponse(BLITZ_ERROR_NOT_CURRENTLY_LOGGING);
                 }
             } else if (msgType == BLITZ_INSTRUCTION) {
-                char instruction = BlitzMessage::getInstruction(this->m_serialBuffer);
+                int instruction = (int)BlitzMessage::getInstruction(this->m_serialBuffer);
                 
-                if ((int)instruction == BLITZ_INSTRUCTION_ID) {
+                if (instruction == BLITZ_INSTRUCTION_ID) {
                     this->sendShortResponse(BLITZ_RESPONSE_ID);
-                } else if ((int)instruction == BLITZ_INSTRUCTION_STATUS) {
+                } else if (instruction == BLITZ_INSTRUCTION_STATUS) {
                     this->sendStatus();
                 } else {
                     bool handled = false;
@@ -240,9 +240,8 @@ void BlitzExpansion::handleSerial() {
  * Formats should be a two digit hex response code along the lines of "91"
  */
 void BlitzExpansion::sendShortResponse(char *code) {
-    char format[7];
+    char format[7] = "%02x";
     char buffer[5];
-    strcpy(format, "%02x");
     strcat(format, code);
     sprintf(buffer, format, this->m_id);
     this->m_serial->println(buffer);
