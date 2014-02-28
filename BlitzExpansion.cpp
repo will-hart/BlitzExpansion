@@ -274,11 +274,11 @@ void BlitzExpansion::sendStatus() {
     BlitzMessage *msg = new BlitzMessage(this->m_id);
     BlitzFormattedMessage output;
     
-    msg->setFlag(3, true); // set as 'status response' instruction message
     msg->pack(this->m_logging);
     msg->pack(this->m_currentIdx, 10);
     msg->pack(this->m_sendIdx, 10);
-    msg->setType(BLITZ_INSTRUCTION);
+    msg->setMeta(BLITZ_RESPONSE_STATUS_META);
+    
     msg->renderInto(output);
     
     this->m_serial->println(output);

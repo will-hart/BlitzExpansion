@@ -182,6 +182,12 @@ bool BlitzMessage::setType(char type_id)
     this->m_meta |= type_mask;
 }
 
+bool BlitzMessage::setMeta(char meta) 
+{
+    this->m_meta = meta;
+    return true;
+}
+
 bool BlitzMessage::getFlag(char *message, short flagId) {
     if (flagId < 1 || flagId > 5) {
         return false;

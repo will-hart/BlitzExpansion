@@ -46,7 +46,7 @@
 #define BLITZ_ERROR_NOT_CURRENTLY_LOGGING "66"
 
 #define BLITZ_RESPONSE_ID "82"
-#define BLITZ_RESPONSE_STATUS "84"
+#define BLITZ_RESPONSE_STATUS_META 0x84
 
 class BlitzMessage
 {
@@ -63,6 +63,7 @@ class BlitzMessage
         BlitzMessage(char id);
     
         bool setType(char type_id);
+        bool setMeta(char meta);
         
         /* packing functions */
         bool pack(bool data);

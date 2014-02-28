@@ -265,6 +265,16 @@ Takes a `char[29]` or `BlitzFormattedMessage` and populates it with the formatte
 
 Resets the current `BlitzMessage`, clearing all saved data.  This is automatically called by `BlitzMessage::renderInto`.  This function takes no arguments.
 
+#### BlitzMessage:setMeta
+
+    bool setMeta(char meta);
+
+Overwrites the meta (type and flags) for the message.  Useful for sending specific responses such as a status response which require additional payload (unlike a standard ID response). This function takes one arguments:
+
+ - **meta**: the `char` to set as the message meta
+
+This function always returns **true**.
+
 #### BlitzMessage:setFlag
 
     bool setFlag(char flag_id, bool state);
