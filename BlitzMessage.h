@@ -31,9 +31,10 @@
 #define BLITZ_TRANSMIT 6
 #define BLITZ_EXTENDED 7
 
-#define BLITZ_INSTRUCTION_NONE 0
-#define BLITZ_INSTRUCTION_ID 1
-#define BLITZ_INSTRUCTION_STATUS 3
+// define the INT versions of the instruction IDs
+#define BLITZ_INSTRUCTION_NONE 128 // 0x80
+#define BLITZ_INSTRUCTION_ID 129 // 0x81
+#define BLITZ_INSTRUCTION_STATUS 131 // 0x83
 
 #define BLITZ_RESPONSE_ACK "40"
 
@@ -86,17 +87,19 @@ class BlitzMessage
         void renderInto(char *dest);
         
         /* receiving functions */
-        static char getType(char *message);
-        static char getInstruction(char *message);
+        static unsigned char getType(char *message);
+        static unsigned char getInstruction(char *message);
         static bool getFlag(char *message, short flagId);
         static blitz_u16 buildU16(char *message, char index);
-        static char asHex(char c);
+        static unsigned char asHex(char c);
         
         /* utility functions */
         void reset();
         
         /* static constants */
         static const int MESSAGE_LENGTH = 28;
+        static const char FLAG_MASK = 0b11100000;
+        
     
 };
 
