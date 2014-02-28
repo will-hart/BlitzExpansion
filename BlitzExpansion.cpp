@@ -181,9 +181,9 @@ void BlitzExpansion::handleSerial() {
             } else if (msgType == BLITZ_INSTRUCTION) {
                 char instruction = BlitzMessage::getInstruction(this->m_serialBuffer);
                 
-                if (instruction == BLITZ_INSTRUCTION_ID) {
+                if ((int)instruction == BLITZ_INSTRUCTION_ID) {
                     this->sendShortResponse(BLITZ_RESPONSE_ID);
-                } else if (instruction == BLITZ_INSTRUCTION_STATUS) {
+                } else if ((int)instruction == BLITZ_INSTRUCTION_STATUS) {
                     this->sendStatus();
                 } else {
                     bool handled = false;
