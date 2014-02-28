@@ -186,7 +186,7 @@ Constructs a new `BlitzMessage`, setting the board ID to the passed `id`.  This 
 
 #### BlitzMessage::asHex
 
-    static char asHex(char c);
+    static unsigned char asHex(char c);
 
 A static function that takes an ASCII character and returns the integer (e.g. `asHex('A')` will return `10`)
 
@@ -213,7 +213,7 @@ A static function that takes a `BlitzFormattedMessage` or `char[29]` and returns
 
 #### BlitzMessage::getInstruction
 
-    static char getFlag(char* message)
+    static unsigned char getFlag(char* message)
 
 A static function that takes a `BlitzFormattedMessage` or `char[29]` and returns the instruction ID:
 
@@ -221,7 +221,7 @@ A static function that takes a `BlitzFormattedMessage` or `char[29]` and returns
  
 #### BlitzMessage::getType
 
-    static char getType(char* message)
+    static unsigned char getType(char* message)
 
 A static function that takes a `BlitzFormattedMessage` or `char[29]` and returns the message type.  This function takes one argument:
 
