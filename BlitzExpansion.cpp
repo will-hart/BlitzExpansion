@@ -227,7 +227,7 @@ void BlitzExpansion::handleSerial() {
             }
             
             this->clearSerialBuffer();
-        } else if (this->m_bufferIdx >= BlitzMessage::MESSAGE_LENGTH) {
+        } else if (this->m_bufferIdx > BlitzMessage::MESSAGE_LENGTH) {
             // message too long error
             this->clearSerialBuffer();
             this->sendShortResponse(BLITZ_ERROR_SERIAL_BUFFER_FULL);
