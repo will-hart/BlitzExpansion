@@ -1,4 +1,4 @@
-# BlitzExpansion 1.3
+# BlitzExpansion 1.3.1
 
 ## About
 
@@ -339,6 +339,15 @@ Updates the controller and returns the value to add to the plant set value:
 
 
 ## Change log
+
+### Version 1.3.1
+
+ - `+` Implement `BlitzExpansion::send` function for immediate complex messages without buffering
+ - `+` Implement `BlitzMessage::setMeta` function for forcing meta chars in messages
+ - `~` Examples switched to 57600 baud
+ - `~` Minor refactor of some code and removal of debugging code
+ - `!` Fix issue with full length messages received being interpreted as too long 
+ - `!` Fix issue where sensors were not being `sample`d when the board was not logging
 
 ### Version 1.3.0
 
