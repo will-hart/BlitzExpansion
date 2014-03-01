@@ -158,7 +158,7 @@ Takes a `BlitzFormattedMessage` and stores it in the `BlitzExpansion` circular b
 
     void sample();
         
-This function should be called from within the main loop. It takes a single sample using the given sample function, then listens for serial messages until the required sampling frequency is obtained. If a significant amount of serial activity is undertaken (for instance transmitting a large amount of messages from the buffer) there may be some delays in sampling.  This function takes no arguments.
+This function should be called from within the main loop. It takes a single sample using the given sample function, then listens for serial messages until the required sampling frequency is obtained. If a significant amount of serial activity is undertaken (for instance transmitting a large amount of messages from the buffer) there may be some delays in sampling.  The Arduino sampling function will be called regardless of whether the device is currently logging, however messages will only be saved to the buffer when the device is logging. This function takes no arguments.
 
 #### BlitzExpansion::send()
 

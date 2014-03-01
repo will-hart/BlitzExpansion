@@ -76,10 +76,10 @@ void BlitzExpansion::connect(void (*sample)(void),
  */
 void BlitzExpansion::sample() {
 
+    // sample whether or not we are logging
+    this->m_onSample();
+        
     if (this->m_logging) {
-        // log a sample with the user defined function
-        this->m_onSample();
-    
         // check if it is time to log a message
         if (this->m_sendCounter >= this->m_sendFrequency) {
             this->m_onLog();
