@@ -106,51 +106,51 @@ bool BlitzMessage::setFlag(char flag_id, bool state) {
 
 /* sending functions */
 void BlitzMessage::renderInto(char* dest) { 
-	
+
     // build the id 
     char id_str[3];
     sprintf(id_str, "%02x", this->m_id);
-	dest[0] = id_str[0];
-	dest[1] = id_str[1];
-    
+    dest[0] = id_str[0];
+    dest[1] = id_str[1];
+
     // build the meta
     char meta_str[3];
     sprintf(meta_str, "%02x", this->m_meta);
-	dest[2] = meta_str[0];
-	dest[3] = meta_str[1];
-    
+    dest[2] = meta_str[0];
+    dest[3] = meta_str[1];
+
     // build the timestamp
     this->m_timestamp = millis();
     char time_str[9];
     sprintf(time_str, "%08lx", this->m_timestamp);
-	dest[4] = time_str[0];
-	dest[5] = time_str[1];
-	dest[6] = time_str[2];
-	dest[7] = time_str[3];
-	dest[8] = time_str[4];
-	dest[9] = time_str[5];
-	dest[10] = time_str[6];
-	dest[11] = time_str[7];
-    
+    dest[4] = time_str[0];
+    dest[5] = time_str[1];
+    dest[6] = time_str[2];
+    dest[7] = time_str[3];
+    dest[8] = time_str[4];
+    dest[9] = time_str[5];
+    dest[10] = time_str[6];
+    dest[11] = time_str[7];
+
     // pad to the end with 0s
-    char raw_payload[16] = "000000000000000";	
+    char raw_payload[16] = "000000000000000";
     this->m_payload->render(raw_payload);
-	dest[12] = raw_payload[0];
-	dest[13] = raw_payload[1];
-	dest[14] = raw_payload[2];
-	dest[15] = raw_payload[3];
-	dest[16] = raw_payload[4];
-	dest[17] = raw_payload[5];
-	dest[18] = raw_payload[6];
-	dest[19] = raw_payload[7];
-	dest[20] = raw_payload[8];
-	dest[21] = raw_payload[9];
-	dest[22] = raw_payload[10];
-	dest[23] = raw_payload[11];
-	dest[24] = raw_payload[12];
-	dest[25] = raw_payload[13];
-	dest[26] = raw_payload[14];
-	dest[27] = raw_payload[15];
+    dest[12] = raw_payload[0];
+    dest[13] = raw_payload[1];
+    dest[14] = raw_payload[2];
+    dest[15] = raw_payload[3];
+    dest[16] = raw_payload[4];
+    dest[17] = raw_payload[5];
+    dest[18] = raw_payload[6];
+    dest[19] = raw_payload[7];
+    dest[20] = raw_payload[8];
+    dest[21] = raw_payload[9];
+    dest[22] = raw_payload[10];
+    dest[23] = raw_payload[11];
+    dest[24] = raw_payload[12];
+    dest[25] = raw_payload[13];
+    dest[26] = raw_payload[14];
+    dest[27] = raw_payload[15];
     dest[28] = '\0';
     
     // reset the message for the next round :)
@@ -164,11 +164,8 @@ void BlitzMessage::reset() {
     this->m_payload = new blitz_payload();
 }
 
-void BlitzMessage::resetFlags() 
-{
-    // initialise flags to "false"
-    char flag_mask = 0b11100000;
-    this->m_meta &= flag_mask;
+void BlitzMessage::resetFlags() {
+    this->m_meta &= BlitzMessage::FLAG_MASK;
 }
 
 bool BlitzMessage::setType(char type_id) 
@@ -185,15 +182,10 @@ bool BlitzMessage::setType(char type_id)
     this->m_meta |= type_mask;
 }
 
-char BlitzMessage::getType(char *message) {
-    char first = BlitzMessage::asHex(message[2]) << 4;
-    first |= BlitzMessage::asHex(message[3]);
-    return first >> 5;
-}
-
-char BlitzMessage::getInstruction(char *message) {
-    char first = (BlitzMessage::asHex(message[2]) & 0b0001) << 4 ;
-    return first | BlitzMessage::asHex(message[3]);
+bool BlitzMessage::setMeta(char meta) 
+{
+    this->m_meta = meta;
+    return true;
 }
 
 bool BlitzMessage::getFlag(char *message, short flagId) {
@@ -206,12 +198,17 @@ bool BlitzMessage::getFlag(char *message, short flagId) {
     }    
 }
 
+unsigned char BlitzMessage::getType(char *message) {
+    unsigned char first = BlitzMessage::asHex(message[2]) << 4;
+    first |= BlitzMessage::asHex(message[3]);
+    return first >> 5;
+}
 
-/**
- * Converts an ascii value to HEX
- */
-char BlitzMessage::asHex(char c) {
-    
+unsigned char BlitzMessage::getInstruction(char *message) {
+    unsigned char first = (BlitzMessage::asHex(message[2])) << 4 ;
+    return first | BlitzMessage::asHex(message[3]);
+}
+unsigned char BlitzMessage::asHex(char c) {
     if (c >= '0' && c <= '9') {
         return c - '0';
     } else if (c >= 'A' && c <= 'F') {

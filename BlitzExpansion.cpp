@@ -76,10 +76,10 @@ void BlitzExpansion::connect(void (*sample)(void),
  */
 void BlitzExpansion::sample() {
 
+    // sample whether or not we are logging
+    this->m_onSample();
+        
     if (this->m_logging) {
-        // log a sample with the user defined function
-        this->m_onSample();
-    
         // check if it is time to log a message
         if (this->m_sendCounter >= this->m_sendFrequency) {
             this->m_onLog();
@@ -136,6 +136,12 @@ void BlitzExpansion::log(BlitzFormattedMessage message) {
     }
 }
 
+/** 
+ * Sends a single message immediately to the data logger without buffering
+ */
+void BlitzExpansion::send(BlitzFormattedMessage message) {
+    this->m_serial->println(message);
+}
 
 /** 
  * Clears the serial buffer
@@ -173,7 +179,7 @@ void BlitzExpansion::handleSerial() {
                     this->sendShortResponse(BLITZ_ERROR_NOT_CURRENTLY_LOGGING);
                 }
             } else if (msgType == BLITZ_INSTRUCTION) {
-                char instruction = BlitzMessage::getInstruction(this->m_serialBuffer);
+                int instruction = (int)BlitzMessage::getInstruction(this->m_serialBuffer);
                 
                 if (instruction == BLITZ_INSTRUCTION_ID) {
                     this->sendShortResponse(BLITZ_RESPONSE_ID);
@@ -221,7 +227,7 @@ void BlitzExpansion::handleSerial() {
             }
             
             this->clearSerialBuffer();
-        } else if (this->m_bufferIdx >= BlitzMessage::MESSAGE_LENGTH) {
+        } else if (this->m_bufferIdx > BlitzMessage::MESSAGE_LENGTH) {
             // message too long error
             this->clearSerialBuffer();
             this->sendShortResponse(BLITZ_ERROR_SERIAL_BUFFER_FULL);
@@ -234,9 +240,8 @@ void BlitzExpansion::handleSerial() {
  * Formats should be a two digit hex response code along the lines of "91"
  */
 void BlitzExpansion::sendShortResponse(char *code) {
-    char format[7];
+    char format[7] = "%02x";
     char buffer[5];
-    strcpy(format, "%02x");
     strcat(format, code);
     sprintf(buffer, format, this->m_id);
     this->m_serial->println(buffer);
@@ -268,11 +273,11 @@ void BlitzExpansion::sendStatus() {
     BlitzMessage *msg = new BlitzMessage(this->m_id);
     BlitzFormattedMessage output;
     
-    msg->setFlag(3, true); // set as 'status response' instruction message
     msg->pack(this->m_logging);
     msg->pack(this->m_currentIdx, 10);
     msg->pack(this->m_sendIdx, 10);
-    msg->setType(BLITZ_INSTRUCTION);
+    msg->setMeta(BLITZ_RESPONSE_STATUS_META);
+    
     msg->renderInto(output);
     
     this->m_serial->println(output);

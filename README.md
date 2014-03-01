@@ -1,4 +1,4 @@
-# BlitzExpansion 1.3
+# BlitzExpansion 1.3.1
 
 ## About
 
@@ -158,7 +158,15 @@ Takes a `BlitzFormattedMessage` and stores it in the `BlitzExpansion` circular b
 
     void sample();
         
-This function should be called from within the main loop. It takes a single sample using the given sample function, then listens for serial messages until the required sampling frequency is obtained. If a significant amount of serial activity is undertaken (for instance transmitting a large amount of messages from the buffer) there may be some delays in sampling.  This function takes no arguments.
+This function should be called from within the main loop. It takes a single sample using the given sample function, then listens for serial messages until the required sampling frequency is obtained. If a significant amount of serial activity is undertaken (for instance transmitting a large amount of messages from the buffer) there may be some delays in sampling.  The Arduino sampling function will be called regardless of whether the device is currently logging, however messages will only be saved to the buffer when the device is logging. This function takes no arguments.
+
+#### BlitzExpansion::send()
+
+    void send(BlitzFormattedMessage message);
+
+Sends a message immediately over serial without adding it to the send buffer. This can be used to respond to instructions with customised response codes. This function takes a single argument:
+
+ - **message**: the `BlitzFormattedMessage` (a `char[29]`) to immediately send
 
 ### BlitzFormattedMessage
 
@@ -178,7 +186,7 @@ Constructs a new `BlitzMessage`, setting the board ID to the passed `id`.  This 
 
 #### BlitzMessage::asHex
 
-    static char asHex(char c);
+    static unsigned char asHex(char c);
 
 A static function that takes an ASCII character and returns the integer (e.g. `asHex('A')` will return `10`)
 
@@ -205,7 +213,7 @@ A static function that takes a `BlitzFormattedMessage` or `char[29]` and returns
 
 #### BlitzMessage::getInstruction
 
-    static char getFlag(char* message)
+    static unsigned char getFlag(char* message)
 
 A static function that takes a `BlitzFormattedMessage` or `char[29]` and returns the instruction ID:
 
@@ -213,7 +221,7 @@ A static function that takes a `BlitzFormattedMessage` or `char[29]` and returns
  
 #### BlitzMessage::getType
 
-    static char getType(char* message)
+    static unsigned char getType(char* message)
 
 A static function that takes a `BlitzFormattedMessage` or `char[29]` and returns the message type.  This function takes one argument:
 
@@ -256,6 +264,16 @@ Takes a `char[29]` or `BlitzFormattedMessage` and populates it with the formatte
     void reset();
 
 Resets the current `BlitzMessage`, clearing all saved data.  This is automatically called by `BlitzMessage::renderInto`.  This function takes no arguments.
+
+#### BlitzMessage:setMeta
+
+    bool setMeta(char meta);
+
+Overwrites the meta (type and flags) for the message.  Useful for sending specific responses such as a status response which require additional payload (unlike a standard ID response). This function takes one arguments:
+
+ - **meta**: the `char` to set as the message meta
+
+This function always returns **true**.
 
 #### BlitzMessage:setFlag
 
@@ -321,6 +339,15 @@ Updates the controller and returns the value to add to the plant set value:
 
 
 ## Change log
+
+### Version 1.3.1
+
+ - `+` Implement `BlitzExpansion::send` function for immediate complex messages without buffering
+ - `+` Implement `BlitzMessage::setMeta` function for forcing meta chars in messages
+ - `~` Examples switched to 57600 baud
+ - `~` Minor refactor of some code and removal of debugging code
+ - `!` Fix issue with full length messages received being interpreted as too long 
+ - `!` Fix issue where sensors were not being `sample`d when the board was not logging
 
 ### Version 1.3.0
 
