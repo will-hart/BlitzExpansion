@@ -22,12 +22,15 @@ class BlitzPID
         float m_last_integral;
         float m_last_error;
         
+        float get_pid(float actual_value, blitz_u32 millis, float Ts);
+        
         blitz_u32 m_last_millis;
         
     public:
         BlitzPID(float kp, float ki, float kd);
         void set(float set_point, blitz_u32 millis);
         float update(float actual_value, blitz_u32 millis);
+        float update(float actual_value, blitz_u32 millis, float Ts);
 };
 
 #endif
