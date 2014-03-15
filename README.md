@@ -1,4 +1,4 @@
-# BlitzExpansion 1.3.1
+# BlitzExpansion 1.3.2
 
 ## About
 
@@ -356,6 +356,10 @@ Returns the delta value to add to the plant set value:
  - **Ts**: the time sample period (in seconds) for the discrete controller
 
 ## Change log
+
+### Version 1.3.2
+
+- `!` Fix integral term
 
 ### Version 1.3.1
 
