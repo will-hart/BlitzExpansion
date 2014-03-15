@@ -39,7 +39,7 @@ float BlitzPID::get_pid(float actual_value, blitz_u32 millis, float Ts) {
     float error = this->m_set_point - actual_value;
     
     float p = this->m_kp * error;
-    float i = Ts * this->m_ki * (this->m_last_integral + error * delta_time);
+    float i = Ts * this->m_ki * (this->m_last_integral + error) * delta_time;
     float d = (1.0/Ts) * this->m_kd * ((error - this->m_last_error) / delta_time);
 
     this->m_last_millis = millis;
