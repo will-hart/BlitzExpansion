@@ -1,4 +1,4 @@
-# BlitzExpansion 1.3.1
+# BlitzExpansion 1.3.2
 
 ## About
 
@@ -332,13 +332,38 @@ Sets the target value or "set point" of the controller:
 
     float update(float actual_value, blitz_u32 millis);
         
-Updates the controller and returns the value to add to the plant set value:
+Updates the controller using a continuous PID controller of the form:
+
+    C(s) = Kp + Ki * (1/s) + Kd * s
+
+Returns the delta value to add to the plant set value:
 
  - **actual_point**: the actual value read from the sensor and converted into controller terms
  - **millis**: the current system time in millis()
 
+#### BlitzPID::update
+
+    float update(float actual_value, blitz_u32 millis);
+        
+Updates the controller using a discrete PID controller of the form:
+
+    C(z) = Kp + Ki * (Ts/z-1) + Kd * (z-1/Ts)
+
+Returns the delta value to add to the plant set value:
+
+ - **actual_point**: the actual value read from the sensor and converted into controller terms
+ - **millis**: the current system time in millis()
+ - **Ts**: the time sample period (in seconds) for the discrete controller
 
 ## Change log
+
+### Version 1.3.2
+
+- `!` Fix integral term
+
+### Version 1.3.1
+
+- `+` Add discrete PID controller function
 
 ### Version 1.3.1
 

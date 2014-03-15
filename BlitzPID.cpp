@@ -28,7 +28,7 @@ void BlitzPID::set(float set_point, blitz_u32 millis) {
     this->m_last_error = 0;
 }
 
-float BlitzPID::update(float actual_value, blitz_u32 millis) {
+float BlitzPID::get_pid(float actual_value, blitz_u32 millis, float Ts) {
 
     if (this->m_last_millis == 0) {
         // if we have not got a last millis then we have no set point
@@ -39,12 +39,20 @@ float BlitzPID::update(float actual_value, blitz_u32 millis) {
     float error = this->m_set_point - actual_value;
     
     float p = this->m_kp * error;
-    float i = this->m_ki * (this->m_last_integral + error * delta_time);
-    float d = this->m_kd * ((error - this->m_last_error) / delta_time);
+    float i = Ts * this->m_ki * (this->m_last_integral + error) * delta_time;
+    float d = (1.0/Ts) * this->m_kd * ((error - this->m_last_error) / delta_time);
 
     this->m_last_millis = millis;
     this->m_last_integral = i;
     this->m_last_error = error;
     
     return p + i + d;
+}
+
+float BlitzPID::update(float actual_value, blitz_u32 millis) {
+    return this->get_pid(actual_value, millis, 1.0);
+}
+
+float BlitzPID::update(float actual_value, blitz_u32 millis, float Ts) {
+    return this->get_pid(actual_value, millis, Ts);
 }
