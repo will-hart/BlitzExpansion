@@ -98,7 +98,6 @@ void BlitzExpansion::sample() {
     
     // loop until our target time is met
     while (millis() < target) {
-        delay(1);
         this->handleSerial();
     }
 }
@@ -212,6 +211,7 @@ void BlitzExpansion::handleSerial() {
 
                 this->m_sendIdx = this->m_currentIdx;
                 this->m_logging = true;
+                this->m_startTime = millis();
                 this->m_sendCounter = 0;
                 this->sendShortResponse(BLITZ_RESPONSE_ACK);
                 
@@ -281,4 +281,15 @@ void BlitzExpansion::sendStatus() {
     msg->renderInto(output);
     
     this->m_serial->println(output);
+}
+
+/**
+ * Gets the elapsed time since the logging session started, or 0 if the 
+ * board is not currently logging 
+ */
+long BlitzExpansion::getElapsed() {
+    if (this->m_logging) {
+        return millis() - this->m_startTime;
+    }
+    return 0;
 }

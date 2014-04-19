@@ -86,6 +86,7 @@ class BlitzMessage
         
         /* sending functions */
         void renderInto(char *dest);
+        void renderInto(char *dest, long timestamp);
         
         /* receiving functions */
         static unsigned char getType(char *message);
