@@ -24,7 +24,7 @@ class BlitzExpansion
         int m_frequencyDelay;
         int m_sendFrequency;
         int m_sendCounter;
-        //long m_startTime;
+        long m_startTime;
         bool m_logging;
         
         char* m_serialBuffer;
@@ -51,5 +51,7 @@ class BlitzExpansion
         
         void send(BlitzFormattedMessage message);
         void sendShortResponse(char *code);
+        
+        long getElapsed();
 };
 #endif*/

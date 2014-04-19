@@ -105,7 +105,11 @@ bool BlitzMessage::setFlag(char flag_id, bool state) {
 }
 
 /* sending functions */
-void BlitzMessage::renderInto(char* dest) { 
+void BlitzMessage::renderInto(char* dest) {
+    this->renderInto(dest, millis());
+}
+
+void BlitzMessage::renderInto(char* dest, long timestamp) { 
 
     // build the id 
     char id_str[3];
@@ -120,7 +124,7 @@ void BlitzMessage::renderInto(char* dest) {
     dest[3] = meta_str[1];
 
     // build the timestamp
-    this->m_timestamp = millis();
+    this->m_timestamp = timestamp;
     char time_str[9];
     sprintf(time_str, "%08lx", this->m_timestamp);
     dest[4] = time_str[0];

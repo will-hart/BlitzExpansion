@@ -92,7 +92,7 @@ void logMessage() {
   builder.setFlag(5, digitalRead(DIG5_PIN));
   
   // render the message
-  builder.renderInto(rawMessage);
+  builder.renderInto(rawMessage, expansion.getElapsed());
   
   // log the raw message - MUST be included otherwise no messages will be logged
   expansion.log(rawMessage);
