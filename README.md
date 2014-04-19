@@ -1,4 +1,4 @@
-# BlitzExpansion 1.3.2
+# BlitzExpansion 1.3.3
 
 ## About
 
@@ -146,6 +146,12 @@ This overloaded function has three arguments:
  - **instruction**: a function for parsing custom board instructions, receives the ID and the message payload broken into four 16 bit `blitz_u16` array elements.
  - **serial**: a reference to the serial adapter being used for communications - usually obtained by `&Serial`
 
+#### BlitzExpansion::getElapsed()
+
+    long getElapsed()
+    
+Returns the number of milliseconds elapsed in the current logging session. If no logging session is underway it returns 0. 
+ 
 #### BlitzExpansion::log()
 
     void log(BlitzFormattedMessage message);
@@ -254,10 +260,12 @@ This function has one mandatory argument and one optional one:
 #### BlitzMessage::renderInto
 
     void renderInto(char *dest);
+    void renderInto(char *dest, long timestamp);
 
-Takes a `char[29]` or `BlitzFormattedMessage` and populates it with the formatted message.  This function takes one argument:
+Takes a `char[29]` or `BlitzFormattedMessage` and populates it with the formatted message.  This function takes one argument and one optional argument:
 
  - **dest**: the destination `char[29]` or `BlitzFormattedMessage` to save the output message to
+ - **timestamp** (optional): the timestamp to record the message (for instance from `BlitzExpansion::getElapsed`). Uses `millis()` if omitted
 
 #### BlitzMessage::reset
 
@@ -356,6 +364,11 @@ Returns the delta value to add to the plant set value:
  - **Ts**: the time sample period (in seconds) for the discrete controller
 
 ## Change log
+
+### Version 1.3.3
+
+- `+` Implement `BlitzExpansion::getElapsed` function to return timestamp on logged session
+- `~` Provide overloaded version of `BlitzMessage::renderInto` accepting a `timestamp`
 
 ### Version 1.3.2
 
