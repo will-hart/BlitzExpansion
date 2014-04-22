@@ -26,11 +26,6 @@
 
 #define PACKED_MESSAGE_CHAR_LENGTH PAYLOAD_LENGTH + META_LENGTH
 
-// TODO define these per board (arduinos vs Due)?
-#define BLITZ_CHAR_LENGTH 8
-#define BLITZ_INT_LENGTH 16
-#define BLITZ_LONG_LENGTH 32
-
 #define BLITZ_START 0
 #define BLITZ_STOP 1
 #define BLITZ_ACK 2
