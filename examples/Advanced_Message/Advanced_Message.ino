@@ -3,7 +3,7 @@
 BlitzMessage message = BlitzMessage(0x08);
 
 void setup() {
-  Serial.begin(9600);  
+  Serial.begin(115200);  
   
   message.setType(BLITZ_DATA);
   

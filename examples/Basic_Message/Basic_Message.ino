@@ -1,7 +1,7 @@
 #include <BlitzExpansion.h>
 
 void setup() {
-  Serial.begin(57600);
+  Serial.begin(115200);
 }
 
 void loop() {

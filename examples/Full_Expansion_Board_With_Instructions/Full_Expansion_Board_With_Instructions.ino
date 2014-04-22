@@ -43,7 +43,7 @@ void setup() {
   pinMode(DIG5_PIN, INPUT);
   
   // set up serial and send ID
-  Serial.begin(57600);
+  Serial.begin(115200);
   
   // connect up the required functions and get going
   expansion.connect(sampleAdcs, logMessage, &Serial);
