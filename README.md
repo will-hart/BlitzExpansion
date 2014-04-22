@@ -97,6 +97,11 @@ The `Speed_Tests.ino` example provides a very rough estimate of message packing 
 
  > Generated 10,000 messages in 15.0500001907 seconds
 
+On version `1.4.0` an Arduino Due can achieve sample rates of approximately 7,000 samples per second:
+
+ > Generated 10,000 messages in 1.4179999828 seconds
+
+
 ## API
 
 ### Types
@@ -365,6 +370,10 @@ Returns the delta value to add to the plant set value:
 
 ## Change log
 
+### Version 1.4.0
+- `+` Implement variable length payload - `#define PAYLOAD_LENGTH` from 0-16
+- `~` Update all samples to 115200 serial baud
+
 ### Version 1.3.3
 
 - `+` Implement `BlitzExpansion::getElapsed` function to return timestamp on logged session
@@ -376,10 +385,7 @@ Returns the delta value to add to the plant set value:
 
 ### Version 1.3.1
 
-- `+` Add discrete PID controller function
-
-### Version 1.3.1
-
+ - `+` Add discrete PID controller function
  - `+` Implement `BlitzExpansion::send` function for immediate complex messages without buffering
  - `+` Implement `BlitzMessage::setMeta` function for forcing meta chars in messages
  - `~` Examples switched to 57600 baud
