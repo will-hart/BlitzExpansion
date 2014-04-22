@@ -86,11 +86,11 @@ bool BlitzMessage::pack(long data, short precision) {
 
 /* flag setting functions */
 bool BlitzMessage::setFlag(char flag_id, bool state) {
-    if (flag_id < 1 || flag_id > FLAG_LENGTH) {
+    if (flag_id < 1 || flag_id > BLITZ_FLAG_LENGTH) {
         return false;
     }
     
-    unsigned char flag_mask = 1 << (FLAG_LENGTH - flag_id);
+    unsigned char flag_mask = 1 << (BLITZ_FLAG_LENGTH - flag_id);
     
     if (state)
     {
@@ -140,9 +140,9 @@ void BlitzMessage::renderInto(char* dest, long timestamp) {
     // have to use strcpy here as the string length is variable
     // this will be compensated for through the possibility of 
     // shorter serial transmissions
-    char raw_payload[PAYLOAD_LENGTH];
+    char raw_payload[BLITZ_PAYLOAD_LENGTH];
     this->m_payload->render(raw_payload);
-    strcpy(dest + META_LENGTH, raw_payload);
+    strcpy(dest + BLITZ_META_LENGTH, raw_payload);
     
     // reset the message for the next round :)
     this->reset();

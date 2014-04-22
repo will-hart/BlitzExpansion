@@ -22,7 +22,7 @@ BlitzExpansion::BlitzExpansion(char id, int bufferSize, int frequency, int sendF
     this->m_frequencyDelay = (int)(1000 / frequency);
     this->m_logging = false;
     
-    this->m_serialBuffer = new char[PACKED_MESSAGE_CHAR_LENGTH];
+    this->m_serialBuffer = new char[BLITZ_FULL_MESSAGE_LENGTH];
     this->clearSerialBuffer();
     
     this->m_bufferIdx = 0;
@@ -147,7 +147,7 @@ void BlitzExpansion::send(BlitzFormattedMessage message) {
  */
 void BlitzExpansion::clearSerialBuffer() {
     this->m_bufferIdx = 0;
-    for (int i = 0; i < PACKED_MESSAGE_CHAR_LENGTH; ++i) {
+    for (int i = 0; i < BLITZ_FULL_MESSAGE_LENGTH; ++i) {
         this->m_serialBuffer[i] = 0;
     }
 }
@@ -191,7 +191,7 @@ void BlitzExpansion::handleSerial() {
                         // pass off to user defined instruction handler
                         unsigned short payload[4] = { 0, 0, 0, 0 };
                         
-                        if (this->m_bufferIdx >= PACKED_MESSAGE_CHAR_LENGTH) {
+                        if (this->m_bufferIdx >= BLITZ_FULL_MESSAGE_LENGTH) {
                             payload[0] = BlitzMessage::buildU16(this->m_serialBuffer, 12);
                             payload[1] = BlitzMessage::buildU16(this->m_serialBuffer, 16);
                             payload[2] = BlitzMessage::buildU16(this->m_serialBuffer, 20);
@@ -227,7 +227,7 @@ void BlitzExpansion::handleSerial() {
             }
             
             this->clearSerialBuffer();
-        } else if (this->m_bufferIdx > PACKED_MESSAGE_CHAR_LENGTH) {
+        } else if (this->m_bufferIdx > BLITZ_FULL_MESSAGE_LENGTH) {
             // message too long error
             this->clearSerialBuffer();
             this->sendShortResponse(BLITZ_ERROR_SERIAL_BUFFER_FULL);

@@ -12,19 +12,19 @@
 #include "blitz_payload.h"
 
 #define _BLITZ_MESSAGE_DEFINES_
-#define FLAG_LENGTH 5
-#define META_LENGTH 12
+#define BLITZ_FLAG_LENGTH 5
+#define BLITZ_META_LENGTH 12
 // allow custom payload length as long as its less than 16
-#ifndef PAYLOAD_LENGTH
-    #define PAYLOAD_LENGTH 16
+#ifndef BLITZ_PAYLOAD_LENGTH
+    #define BLITZ_PAYLOAD_LENGTH 16
 #else
-    #if PAYLOAD_LENGTH > 16
-        #warning Maximum supported PAYLOAD_LENGTH is 16
-        #define PAYLOAD_LENGTH 16
+    #if BLITZ_PAYLOAD_LENGTH > 16
+        #warning Maximum supported BLITZ_PAYLOAD_LENGTH is 16
+        #define BLITZ_PAYLOAD_LENGTH 16
     #endif
 #endif 
 
-#define PACKED_MESSAGE_CHAR_LENGTH PAYLOAD_LENGTH + META_LENGTH
+#define BLITZ_FULL_MESSAGE_LENGTH BLITZ_PAYLOAD_LENGTH + BLITZ_META_LENGTH
 
 #define BLITZ_START 0
 #define BLITZ_STOP 1
