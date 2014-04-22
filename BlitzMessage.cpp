@@ -123,7 +123,8 @@ void BlitzMessage::renderInto(char* dest, long timestamp) {
     dest[2] = meta_str[0];
     dest[3] = meta_str[1];
 
-    // build the timestamp
+    // build the timestamp - strncpy was quite a bit slower
+    // than just accessing bits one by one
     this->m_timestamp = timestamp;
     char time_str[9];
     sprintf(time_str, "%08lx", this->m_timestamp);
@@ -136,26 +137,12 @@ void BlitzMessage::renderInto(char* dest, long timestamp) {
     dest[10] = time_str[6];
     dest[11] = time_str[7];
 
-    // pad to the end with 0s
-    char raw_payload[16] = "000000000000000";
+    // have to use strcpy here as the string length is variable
+    // this will be compensated for through the possibility of 
+    // shorter serial transmissions
+    char raw_payload[PAYLOAD_LENGTH];
     this->m_payload->render(raw_payload);
-    dest[12] = raw_payload[0];
-    dest[13] = raw_payload[1];
-    dest[14] = raw_payload[2];
-    dest[15] = raw_payload[3];
-    dest[16] = raw_payload[4];
-    dest[17] = raw_payload[5];
-    dest[18] = raw_payload[6];
-    dest[19] = raw_payload[7];
-    dest[20] = raw_payload[8];
-    dest[21] = raw_payload[9];
-    dest[22] = raw_payload[10];
-    dest[23] = raw_payload[11];
-    dest[24] = raw_payload[12];
-    dest[25] = raw_payload[13];
-    dest[26] = raw_payload[14];
-    dest[27] = raw_payload[15];
-    dest[28] = '\0';
+    strcpy(dest + META_LENGTH, raw_payload);
     
     // reset the message for the next round :)
     this->reset();

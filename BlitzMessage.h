@@ -13,9 +13,18 @@
 
 #define _BLITZ_MESSAGE_DEFINES_
 #define FLAG_LENGTH 5
-#define PAYLOAD_LENGTH 16
-#define PAYLOAD_BITS 64
-#define PACKED_MESSAGE_CHAR_LENGTH 28
+#define META_LENGTH 12
+// allow custom payload length as long as its less than 16
+#ifndef PAYLOAD_LENGTH
+    #define PAYLOAD_LENGTH 16
+#else
+    #if PAYLOAD_LENGTH > 16
+        #warning Maximum supported PAYLOAD_LENGTH is 16
+        #define PAYLOAD_LENGTH 16
+    #endif
+#endif 
+
+#define PACKED_MESSAGE_CHAR_LENGTH PAYLOAD_LENGTH + META_LENGTH
 
 // TODO define these per board (arduinos vs Due)?
 #define BLITZ_CHAR_LENGTH 8
@@ -99,7 +108,6 @@ class BlitzMessage
         void reset();
         
         /* static constants */
-        static const int MESSAGE_LENGTH = 28;
         static const char FLAG_MASK = 0b11100000;
         
     
