@@ -118,6 +118,27 @@ A 16 bit unsigned number - equivalent to `unsigned short`
 
 A 32 bit unsigned number equivalent to `unsigned long` for most Atmel Arduino's, or `unsigned int` on the Arduino Due.
 
+### Configuration
+
+`BlitzExpansion` allows a limited configuration of the way it operates through `#define` of constants *before* importing any libraries. Each configuration option provides a default value which will be used if no other value is specified. This section details the available options.
+
+#### BLITZ_PAYLOAD_LENGTH
+
+Default: 
+
+    #define BLITZ_PAYLOAD_LENGTH 16
+
+The default payload lenth is 64 bits. This is encoded in hex where each characters (e.g. `\xAA`) represent a nibble or four bits. This parameter represents the length of the payload in hex characters. The default is 16 which is equivalent to a 64 bit payload.
+
+The maximum value of this configuration option is limited to 16 due to the way in which the payload is constructed internally using two 32 bit numbers (the type is platform dependent). If a value greater than 16 is specified, 16 will be used.
+
+Example:
+
+    // define a 16 bit payload length, or four hexadecimal characters
+    #define BLITZ_PAYLOAD_LENGTH 4
+
+The main purpose of this configuration option is to allow very lightweight expansion boards to reduce the amount of serial communication they carry out.
+
 ### BlitzExpansion
 
 #### Constructor (BlitzExpansion::BlitzExpansion)
@@ -371,7 +392,7 @@ Returns the delta value to add to the plant set value:
 ## Change log
 
 ### Version 1.4.0
-- `+` Implement variable length payload - `#define PAYLOAD_LENGTH` from 0-16
+- `+` Implement variable length payload - `#define BLITZ_PAYLOAD_LENGTH` from 0-16
 - `~` Update all samples to 115200 serial baud
 
 ### Version 1.3.3
